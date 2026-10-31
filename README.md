@@ -1,6 +1,6 @@
 ![Galactic's tail at three settings of replace](docs/images/galactic-tail.png)
 
-airwindows-py brings Chris Johnson's Airwindows plug-ins, 528 of them, to
+audioairwindows brings Chris Johnson's Airwindows plug-ins, 528 of them, to
 audiodsp's audio graph on CPython and MicroPython-compatible firmware.
 
 ## Install
@@ -8,7 +8,7 @@ audiodsp's audio graph on CPython and MicroPython-compatible firmware.
 On CPython, beside [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/) 0.6.10 or later:
 
 ```sh
-pip install git+https://github.com/bdbarnett/airwindows-py
+pip install git+https://github.com/PyDevices/airwindows
 ```
 
 On MicroPython, build this repository into the firmware next to audiodsp

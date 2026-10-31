@@ -6,7 +6,7 @@ The effects are audiodsp audio nodes, so audiodsp comes first: version
 ## CPython
 
 ```sh
-pip install git+https://github.com/bdbarnett/airwindows-py
+pip install git+https://github.com/PyDevices/airwindows
 ```
 
 That installs [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/)
@@ -24,7 +24,7 @@ Put both checkouts in one folder:
 ```sh
 mkdir modules && cd modules
 git clone https://github.com/PyDevices/audiodsp
-git clone https://github.com/bdbarnett/airwindows-py
+git clone https://github.com/PyDevices/airwindows
 ./audiodsp/scripts/fetch_deps.sh
 ```
 
@@ -39,7 +39,7 @@ includes both, and point `USER_C_MODULES` at it:
 
 ```cmake
 include(${CMAKE_CURRENT_LIST_DIR}/audiodsp/micropython.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/airwindows-py/micropython.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/airwindows/micropython.cmake)
 ```
 
 Or, on MicroPython 1.29 or later, include both manifests from the manifest
@@ -47,7 +47,7 @@ your build already uses:
 
 ```python
 include("/path/to/modules/audiodsp/manifest.py")
-include("/path/to/modules/airwindows-py/manifest.py")
+include("/path/to/modules/airwindows/manifest.py")
 ```
 
 ### Choose the plug-ins

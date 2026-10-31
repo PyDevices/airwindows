@@ -1,4 +1,4 @@
-# airwindows-py docs
+# audioairwindows docs
 
 **Get started.** [Install](get-started/install.md) on CPython or into a
 MicroPython firmware, then run [your first program](get-started/first-program.md).
