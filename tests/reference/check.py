@@ -19,6 +19,10 @@ measured the same way (Galactic's worst was 2.48 LSB before rounding). The resul
 tests/reference/results.json, and --report turns a full set of them into
 docs/reference/accuracy.md.
 
+A plug-in with a fast variant written by hand for the S3 (policy.json,
+"tuned") is built a second time with AW_TUNED=1 and that variant is held to
+the same bar, as `tuned`.
+
 --faults plants two faults in each plug-in and fails if the comparison
 misses the first: a gain error of 1 part in 4096 on one side (1 in 256 for a
 plug-in too quiet for that to show), and a parameter read from the wrong
@@ -63,9 +67,9 @@ def param_sets(name):
     return sets
 
 
-def build(name, kernel=None, tag=""):
+def build(name, kernel=None, tag="", defines=()):
     """The harness binary for one plug-in. `kernel` swaps in another kernel
-    source, for a planted fault."""
+    source, for a planted fault; `defines` are -D options for the kernel."""
     BIN.mkdir(exist_ok=True)
     exe = BIN / (name + tag)
     src = UPSTREAM / name
@@ -80,7 +84,8 @@ def build(name, kernel=None, tag=""):
                     for i, s in enumerate(INDEX[name]["seeds"]))
     obj = BIN / (name + tag + ".o")
     subprocess.run([CC, "-std=c11", "-O2", "-w", "-c", "-I",
-                    str(ROOT / "src"), "-o", str(obj), str(kernel)],
+                    str(ROOT / "src"), *["-D" + d for d in defines],
+                    "-o", str(obj), str(kernel)],
                    check=True, timeout=600)
     subprocess.run(
         [CXX, "-O1", "-w", "-std=c++14", "-fwrapv", "-include",
@@ -113,13 +118,32 @@ def run_cases(name, exe, fault=0, rates=RATES, sets=None):
     return rows
 
 
+def has_tuned(name):
+    return "AW_TUNED" in (ROOT / "src" / "airwindows" / "plugins" /
+                          (name + ".c")).read_text()
+
+
+def with_tuned(rows, tuned_rows):
+    """rows, each with the tuned build's fast variant as `tuned`."""
+    for row, other in zip(rows, tuned_rows):
+        if "fast" in other:
+            row["tuned"] = other["fast"]
+        elif "error" in other:
+            row["error"] = other["error"]
+    return rows
+
+
+def variants(rows):
+    return [v for v in ("ref", "fast", "tuned") if any(v in r for r in rows)]
+
+
 def summarize(rows):
     """The worst case of each variant. A case where upstream's own output
     goes infinite or NaN has nothing to compare against: it is counted and
     named, and left out of the bar."""
     out = {"cases": len(rows)}
     held = [r for r in rows if r.get("finite") is not False]
-    for v in ("ref", "fast"):
+    for v in variants(rows):
         worst = max((r[v]["max_lsb"] for r in held if v in r), default=None)
         err = max((r[v]["err_db"] for r in held if v in r), default=None)
         out[v] = {"max_lsb": worst, "worst_err_db": err}
@@ -128,7 +152,7 @@ def summarize(rows):
                         if r.get("finite") is False]
     out["pass"] = out["errors"] == 0 and all(
         out[v]["max_lsb"] is not None and out[v]["max_lsb"] <= BAR_LSB
-        for v in ("ref", "fast"))
+        for v in variants(rows))
     return out
 
 
@@ -154,32 +178,44 @@ def plant_wrong_param(name, tmp):
 
 
 def check(name, faults):
+    tuned = has_tuned(name)
     try:
         exe = build(name)
+        tuned_exe = build(name, tag="_tuned", defines=["AW_TUNED=1"]) \
+            if tuned else None
     except subprocess.CalledProcessError as e:
         return name, {"pass": False, "build_error": str(e)[-300:]}, []
-    rows = run_cases(name, exe)
+
+    def run(exe, tuned_exe, **kw):
+        rows = run_cases(name, exe, **kw)
+        if tuned_exe:
+            rows = with_tuned(rows, run_cases(name, tuned_exe, **kw))
+        return rows
+
+    def caught_by_any(rows):
+        return any(r.get(v, {}).get("max_lsb", 0) > BAR_LSB
+                   for r in rows for v in ("ref", "fast", "tuned"))
+
+    rows = run(exe, tuned_exe)
     summary = summarize(rows)
     if faults and INDEX[name]["params"]:
         # Planted faults, each at one rate over the settings that move it.
         caught = {}
-        gain = run_cases(name, exe, fault=1, rates=[48000])
-        caught["gain"] = any(r.get(v, {}).get("max_lsb", 0) > BAR_LSB
-                             for r in gain for v in ("ref", "fast"))
+        gain = run(exe, tuned_exe, fault=1, rates=[48000])
+        caught["gain"] = caught_by_any(gain)
         if not caught["gain"]:
             # 1 part in 4096 moves no sample past the bar when the output
             # stays under about 12000; a plug-in that quiet gets 1 in 256.
-            gain = run_cases(name, exe, fault=2, rates=[48000])
-            caught["gain"] = any(r.get(v, {}).get("max_lsb", 0) > BAR_LSB
-                                 for r in gain for v in ("ref", "fast"))
+            gain = run(exe, tuned_exe, fault=2, rates=[48000])
+            caught["gain"] = caught_by_any(gain)
         tmp = BIN / "faults"
         tmp.mkdir(parents=True, exist_ok=True)
-        fexe = build(name, plant_wrong_param(name, tmp), tag="_fault")
-        wrong = run_cases(name, fexe, rates=[48000],
-                          sets=param_sets(name)[5:])
-        caught["wrong_param"] = any(
-            r.get(v, {}).get("max_lsb", 0) > BAR_LSB
-            for r in wrong for v in ("ref", "fast"))
+        planted = plant_wrong_param(name, tmp)
+        fexe = build(name, planted, tag="_fault")
+        ftuned = build(name, planted, tag="_fault_tuned",
+                       defines=["AW_TUNED=1"]) if tuned else None
+        wrong = run(fexe, ftuned, rates=[48000], sets=param_sets(name)[5:])
+        caught["wrong_param"] = caught_by_any(wrong)
         summary["faults_caught"] = caught
     return name, summary, rows
 
@@ -260,10 +296,11 @@ def main(argv=None):
                 lambda n: check(n, args.faults), names):
             results[name] = {"summary": summary, "cases": rows}
             s = summary
-            print("%-24s %s ref %s fast %s%s" % (
+            print("%-24s %s ref %s fast %s%s%s" % (
                 name, "PASS" if s.get("pass") else "FAIL",
                 s.get("ref", {}).get("max_lsb"),
                 s.get("fast", {}).get("max_lsb"),
+                " tuned %s" % s["tuned"]["max_lsb"] if "tuned" in s else "",
                 " faults %s" % s["faults_caught"] if "faults_caught" in s
                 else ""), flush=True)
             args.out.write_text(json.dumps(results, indent=1,

@@ -31,6 +31,12 @@ if sys.platform == "win32":
 # ESP32-S3 firmware is, so a desktop can render what the S3 renders.
 FAST = os.environ.get("AW_FAST_DEFAULT", "0").strip() or "0"
 
+# AW_TUNED=1 runs that fast path with the kernels written by hand for the
+# S3, as its firmware does, so a desktop renders the S3's bytes
+# (airwindows/plugin.h).
+TUNED = [("AW_TUNED", os.environ["AW_TUNED"].strip())] \
+    if os.environ.get("AW_TUNED", "").strip() else []
+
 # Every plug-in the generator carries (src/airwindows/selection.txt).
 PLUGINS = ["src/airwindows/plugins/%s.c" % line.split()[0] for line in
            Path(__file__).parent.joinpath(
@@ -50,7 +56,7 @@ setup(
             define_macros=[("AW_WITH_ALL", "1"),
                            ("AW_VERSION", '"%s"' % VERSION),
                            ("AW_REVISION", '"%s"' % REVISION),
-                           ("AW_FAST_DEFAULT", FAST)],
+                           ("AW_FAST_DEFAULT", FAST)] + TUNED,
             extra_compile_args=EXTRA,
         ),
     ],

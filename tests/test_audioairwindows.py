@@ -53,6 +53,23 @@ surface [False, True, False, 'TypeError', 'ValueError']
 2 ButterComp2 0xd2c01757
 """
 
+# The fast path with the kernels written by hand for the ESP32-S3
+# (audioairwindows.TUNED), as its firmware runs it: rendered by CPython built
+# with AW_FAST_DEFAULT=1 AW_TUNED=1 on x86-64 Linux, and by an ESP32-S3,
+# identically. PurestDrive has one, in fixed point; the others render as
+# above.
+EXPECTED_TUNED = """\
+surface [False, True, False, 'TypeError', 'ValueError']
+1 Galactic 0x351593b9
+1 Galactic 0x97ed8d18
+1 PurestDrive 0x2462eeca
+1 ButterComp2 0x9bea3bd3
+2 Galactic 0x72ff9c79
+2 Galactic 0x4b0460d8
+2 PurestDrive 0xd0538bd6
+2 ButterComp2 0xd2c01757
+"""
+
 CASES = (
     ("Galactic", {}, {"dry_wet": 0.5}),
     ("Galactic", {"detune": 1.0, "replace": 0.2, "bigness": 0.6},
@@ -120,7 +137,8 @@ def main():
             gc.collect()
             lines.append("%d %s %s" % (channels, name, hex(h)))
             print(lines[-1])
-    expected = EXPECTED_FAST if getattr(aw, "FAST", False) else EXPECTED
+    expected = EXPECTED_TUNED if getattr(aw, "TUNED", False) else \
+        EXPECTED_FAST if getattr(aw, "FAST", False) else EXPECTED
     if "\n".join(lines) + "\n" != expected:
         print("FAIL: output differs from EXPECTED")
         raise SystemExit(1)

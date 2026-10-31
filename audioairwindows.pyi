@@ -21,6 +21,12 @@ FAST: bool
 firmware does, rather than the reference port. Both meet the same accuracy
 bar against upstream; docs/how-it-works/the-port.md has it."""
 
+TUNED: bool
+"""Whether that fast path runs the kernels written by hand for the ESP32-S3,
+as its firmware does, in the plug-ins that have one: each measured cheaper
+there than the translated loop and meets the same bar.
+docs/how-it-works/the-port.md names them."""
+
 class _Airwindows:
     sample_rate: int
     channel_count: int

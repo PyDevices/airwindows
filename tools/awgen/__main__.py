@@ -54,6 +54,7 @@ def load(upstream, only=None):
         plugin.wide = POLICY.get(name, {}).get("wide", [])
         plugin.phase = POLICY.get(name, {}).get("phase", [])
         plugin.fast_as_ref = POLICY.get(name, {}).get("fast") is False
+        plugin.tuned = POLICY.get(name, {}).get("tuned", False)
         plugins.append(plugin)
     return plugins, failed
 

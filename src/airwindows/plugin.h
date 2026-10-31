@@ -8,6 +8,19 @@
 
 #include <stdint.h>
 
+// Whether the fast path runs the kernels written by hand for the ESP32-S3
+// where a plug-in has one (policy.json, "tuned"): on Xtensa, where each was
+// measured cheaper than the translated loop. Elsewhere, the P4 among them,
+// the translated loop runs. A desktop build may set it to test what the S3
+// runs.
+#ifndef AW_TUNED
+#if defined(__XTENSA__)
+#define AW_TUNED 1
+#else
+#define AW_TUNED 0
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

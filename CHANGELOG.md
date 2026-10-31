@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- On the ESP32-S3, PurestDrive runs a kernel written for it, in fixed
+  point, which takes its cost from 3.5 to 2.9 % of a core. It meets the
+  same bar against upstream; `audioairwindows.TUNED` says whether a build
+  runs the S3's tuned kernels, and `AW_TUNED=1` builds a desktop that
+  renders the S3's bytes.
 - On the ESP32-S3, every plug-in's fast path reads and writes its int16
   samples in one instruction each, which takes about a tenth off Galactic,
   PurestDrive and ButterComp2 and renders the same bytes.

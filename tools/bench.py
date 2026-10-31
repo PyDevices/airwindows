@@ -131,7 +131,7 @@ def main():
     values = noise()
     block_us = 256 * 1000000 / RATE
     print("audioairwindows", aw.__version__, getattr(aw, "__revision__", "?"),
-          "fixed point" if getattr(aw, "FIXED", False) else
+          "fast path, tuned" if getattr(aw, "TUNED", False) else
           "fast path" if getattr(aw, "FAST", False) else "reference")
     modes = (False, True) if audiopump else (False,)
     print("%% of one core at 48 kHz stereo, pulled from Python%s" % (
