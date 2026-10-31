@@ -1,0 +1,134 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cpython:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the pins from DEPENDENCIES.lock
+        id: pins
+        run: |
+          awk '!/^#/ && NF { print $1 "=" $3 }' DEPENDENCIES.lock >> "$GITHUB_OUTPUT"
+      - name: Upstream's source, at the pin
+        uses: actions/checkout@v4
+        with:
+          repository: airwindows/airwindows
+          ref: ${{ steps.pins.outputs.airwindows }}
+          path: .cache/airwindows-upstream
+          sparse-checkout: plugins/LinuxVST/src
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: The committed code is what the generator writes
+        run: |
+          python -m tools.awgen
+          git diff --exit-code
+      - name: Install
+        run: |
+          python -m pip install setuptools numpy flake8 "pydevices-audiodsp>=0.6.10"
+          python -m pip install --no-build-isolation .
+      - name: Lint
+        run: python -m flake8 --select=E9,F63,F7,F82,F401,F841 src tests tools examples
+      - name: Test
+        run: python -m unittest discover -s tests -v
+      - name: Ten generated kernels against upstream's own code, with planted faults
+        if: matrix.python == '3.12'
+        run: python -m unittest discover -s tests -p 'check_*.py' -v
+      - name: The simpletest runs
+        run: python examples/audioairwindows_simpletest.py
+      - name: Built with the fast path on, as ESP32-S3 firmware is, it renders the recorded bytes
+        run: |
+          rm -rf build
+          AW_FAST_DEFAULT=1 python -m pip install --no-build-isolation --force-reinstall --no-deps .
+          python -c "import audioairwindows; assert audioairwindows.FAST"
+          python tests/test_audioairwindows.py
+
+  # Every plug-in against upstream, on a push to main or by hand: about
+  # 530 builds of upstream's C++, shared across eight runners.
+  reference:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the pins from DEPENDENCIES.lock
+        id: pins
+        run: |
+          awk '!/^#/ && NF { print $1 "=" $3 }' DEPENDENCIES.lock >> "$GITHUB_OUTPUT"
+      - name: Upstream's source, at the pin
+        uses: actions/checkout@v4
+        with:
+          repository: airwindows/airwindows
+          ref: ${{ steps.pins.outputs.airwindows }}
+          path: .cache/airwindows-upstream
+          sparse-checkout: plugins/LinuxVST/src
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Shard ${{ matrix.shard }} of 8, within the bar, with planted faults
+        run: python tests/reference/check.py --faults --jobs 4 --shard ${{ matrix.shard }}/8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reference-${{ matrix.shard }}
+          path: tests/reference/results.json
+
+  micropython:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: modules/airwindows-py
+      - name: Read the pins from DEPENDENCIES.lock
+        id: pins
+        run: |
+          awk '!/^#/ && NF { print $1 "=" $3 }' modules/airwindows-py/DEPENDENCIES.lock >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: PyDevices/audiodsp
+          ref: ${{ steps.pins.outputs.audiodsp }}
+          path: modules/audiodsp
+      - uses: actions/checkout@v4
+        with:
+          repository: micropython/micropython
+          ref: ${{ steps.pins.outputs.micropython }}
+          path: micropython
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the unix port with audiodsp and this module
+        run: |
+          ./modules/audiodsp/scripts/fetch_deps.sh
+          make -C micropython/mpy-cross -j4
+          make -C micropython/ports/unix submodules
+          make -C micropython/ports/unix -j4 USER_C_MODULES=$GITHUB_WORKSPACE/modules
+      - name: Install the CPython side
+        run: |
+          python -m pip install setuptools numpy "pydevices-audiodsp>=0.6.10"
+          python -m pip install --no-build-isolation ./modules/airwindows-py
+      - name: MicroPython renders the same bytes as CPython
+        env:
+          MICROPYTHON: ${{ github.workspace }}/micropython/ports/unix/build-standard/micropython
+        run: python -m unittest modules/airwindows-py/tests/test_cross_runtime.py -v
+      - name: The interpreter test, on MicroPython
+        run: ./micropython/ports/unix/build-standard/micropython -X heapsize=8M modules/airwindows-py/tests/test_audioairwindows.py
+      - name: A unix port with the fast path on, as ESP32-S3 firmware is, renders the recorded bytes
+        run: |
+          make -C micropython/ports/unix -j4 USER_C_MODULES=$GITHUB_WORKSPACE/modules BUILD=build-fast CFLAGS_EXTRA=-DAW_FAST_DEFAULT=1
+          ./micropython/ports/unix/build-fast/micropython -c "import audioairwindows; assert audioairwindows.FAST"
+          ./micropython/ports/unix/build-fast/micropython -X heapsize=8M modules/airwindows-py/tests/test_audioairwindows.py
+      - name: The simpletest and the revision stamp, on MicroPython
+        run: |
+          ./micropython/ports/unix/build-standard/micropython -X heapsize=8M modules/airwindows-py/examples/audioairwindows_simpletest.py | tee simpletest.out
+          ! grep -q ' unknown$' simpletest.out

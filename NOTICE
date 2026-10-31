@@ -1,0 +1,20 @@
+NOTICE
+
+The license is MIT and stands alone in LICENSE. This file says what came
+from where.
+
+Every effect is generated from Airwindows by Chris Johnson
+(https://github.com/airwindows/airwindows), used under the MIT License in
+third_party/airwindows/LICENSE (Copyright (c) 2018 Chris Johnson).
+tools/awgen reads each plug-in's upstream source and writes
+src/airwindows/plugins/<Name>.c, a C translation of its processing loop,
+constructor and parameters; third_party/airwindows/ORIGIN.txt names the
+upstream commit and what was changed.
+
+Upstream's source is not included. The generator and the reference tests
+read a checkout of it at that commit (.cache/airwindows-upstream); the
+tests compile it to check each generated kernel against it, and nothing in
+the package is built from it.
+
+The nodes run on audiodsp (https://github.com/PyDevices/audiodsp, MIT),
+which this package depends on and does not include.

@@ -1,0 +1,1036 @@
+{
+ "_doc": "Per plug-in choices the generator can't make from the source alone. wide: members the fast variant keeps in double, with every statement that touches them, because a long sum in single precision drifts from upstream. phase: wide members that only grow by a step and wrap to zero, which the fast variant keeps in Q4.60 fixed point, so adding the step costs no double arithmetic. fast: false runs upstream's arithmetic in the fast slot too, for a plug-in whose single-precision loop measured outside the bar (fast_error: its worst case, in int16 steps). skip: why a plug-in isn't carried at all.",
+ "Galactic": {
+  "wide": [
+   "vibM",
+   "oldfpd",
+   "drift"
+  ],
+  "phase": [
+   "vibM"
+  ]
+ },
+ "DitherFloat": {
+  "skip": "a demonstration of upstream's dither for 32-bit float output; this module's output is 16-bit, and that dither is the step every port leaves out"
+ },
+ "ADClip7": {
+  "fast": false,
+  "fast_error": 2968
+ },
+ "ADT": {
+  "fast": false,
+  "fast_error": 28
+ },
+ "Air2": {
+  "fast": false,
+  "fast_error": 78
+ },
+ "Air4": {
+  "fast": false,
+  "fast_error": 31
+ },
+ "AngleFilter": {
+  "fast": false,
+  "fast_error": 134
+ },
+ "AutoPan": {
+  "fast": false,
+  "fast_error": 16010
+ },
+ "BassAmp": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "BassDrive": {
+  "fast": false,
+  "fast_error": 38482
+ },
+ "BassKit": {
+  "fast": false,
+  "fast_error": 111
+ },
+ "Baxandall": {
+  "fast": false,
+  "fast_error": 7
+ },
+ "Baxandall2": {
+  "fast": false,
+  "fast_error": 21
+ },
+ "Baxandall3": {
+  "fast": false,
+  "fast_error": 209
+ },
+ "Beam": {
+  "fast": false,
+  "fast_error": 4096
+ },
+ "BezEQ": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "BezEQ2": {
+  "fast": false,
+  "fast_error": 2660
+ },
+ "BezEQ3": {
+  "fast": false,
+  "fast_error": 23090
+ },
+ "BeziComp": {
+  "fast": false,
+  "fast_error": 522
+ },
+ "BigAmp": {
+  "fast": false,
+  "fast_error": 3827
+ },
+ "Biquad": {
+  "fast": false,
+  "fast_error": 32
+ },
+ "Biquad2": {
+  "fast": false,
+  "fast_error": 32768
+ },
+ "BiquadDouble": {
+  "fast": false,
+  "fast_error": 1194
+ },
+ "BiquadHiLo": {
+  "fast": false,
+  "fast_error": 58
+ },
+ "BiquadNonLin": {
+  "fast": false,
+  "fast_error": 5
+ },
+ "BiquadOneHalf": {
+  "fast": false,
+  "fast_error": 189
+ },
+ "BiquadPlus": {
+  "fast": false,
+  "fast_error": 8
+ },
+ "BiquadStack": {
+  "fast": false,
+  "fast_error": 2023
+ },
+ "BiquadTriple": {
+  "fast": false,
+  "fast_error": 99
+ },
+ "BitGlitter": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "BlockParty": {
+  "fast": false,
+  "fast_error": 11
+ },
+ "BrassRider": {
+  "fast": false,
+  "fast_error": 7
+ },
+ "BussColors4": {
+  "fast": false,
+  "fast_error": 12
+ },
+ "ButterComp": {
+  "fast": false,
+  "fast_error": 25
+ },
+ "C5RawBuss": {
+  "fast": false,
+  "fast_error": 13
+ },
+ "CStrip": {
+  "fast": false,
+  "fast_error": 130
+ },
+ "CStrip2": {
+  "fast": false,
+  "fast_error": 4
+ },
+ "Cabs": {
+  "fast": false,
+  "fast_error": 106
+ },
+ "Cabs2": {
+  "fast": false,
+  "fast_error": 12
+ },
+ "ChimeyDeluxe": {
+  "fast": false,
+  "fast_error": 2283
+ },
+ "ChimeyGuitar": {
+  "fast": false,
+  "fast_error": 2241
+ },
+ "ChimeyGuitar2": {
+  "fast": false,
+  "fast_error": 46883
+ },
+ "Chorus": {
+  "fast": false,
+  "fast_error": 36603
+ },
+ "ChorusEnsemble": {
+  "fast": false,
+  "fast_error": 21740
+ },
+ "CloudCoat": {
+  "fast": false,
+  "fast_error": 38772
+ },
+ "Coils": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "Compresaturator": {
+  "fast": false,
+  "fast_error": 35
+ },
+ "Console8LiteBuss": {
+  "fast": false,
+  "fast_error": 9
+ },
+ "ConsoleHBuss": {
+  "fast": false,
+  "fast_error": 29
+ },
+ "ConsoleHChannel": {
+  "fast": false,
+  "fast_error": 41740
+ },
+ "ConsoleHPre": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "ConsoleX2Buss": {
+  "fast": false,
+  "fast_error": 107
+ },
+ "ConsoleX2Channel": {
+  "fast": false,
+  "fast_error": 5710
+ },
+ "ConsoleX2Pre": {
+  "fast": false,
+  "fast_error": 625
+ },
+ "ConsoleX3": {
+  "fast": false,
+  "fast_error": 3390
+ },
+ "ConsoleXBuss": {
+  "fast": false,
+  "fast_error": 14083
+ },
+ "ConsoleXChannel": {
+  "fast": false,
+  "fast_error": 9457
+ },
+ "ConsoleXPre": {
+  "fast": false,
+  "fast_error": 27780
+ },
+ "CreamCoat": {
+  "fast": false,
+  "fast_error": 9201
+ },
+ "Creature": {
+  "fast": false,
+  "fast_error": 27725
+ },
+ "CrickBass": {
+  "fast": false,
+  "fast_error": 430
+ },
+ "CrunchCoat": {
+  "fast": false,
+  "fast_error": 65312
+ },
+ "Dark": {
+  "fast": false,
+  "fast_error": 4096
+ },
+ "DarkNoise": {
+  "fast": false,
+  "fast_error": 428
+ },
+ "DeBess": {
+  "fast": false,
+  "fast_error": 382
+ },
+ "DeBez": {
+  "fast": false,
+  "fast_error": 11585
+ },
+ "DeCrackle": {
+  "fast": false,
+  "fast_error": 64
+ },
+ "DeHiss": {
+  "fast": false,
+  "fast_error": 32
+ },
+ "DeNoise": {
+  "fast": false,
+  "fast_error": 5616
+ },
+ "DeRez": {
+  "fast": false,
+  "fast_error": 39599
+ },
+ "DeRez2": {
+  "fast": false,
+  "fast_error": 36389
+ },
+ "DeRez3": {
+  "fast": false,
+  "fast_error": 12630
+ },
+ "DeRez4": {
+  "fast": false,
+  "fast_error": 55906
+ },
+ "DeRez5": {
+  "fast": false,
+  "fast_error": 45914
+ },
+ "Deckwrecka": {
+  "fast": false,
+  "fast_error": 7
+ },
+ "Density": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "Density2": {
+  "fast": false,
+  "fast_error": 8
+ },
+ "Desk4": {
+  "fast": false,
+  "fast_error": 109
+ },
+ "Discontinuity": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "Disintegrate": {
+  "fast": false,
+  "fast_error": 3277
+ },
+ "Distance": {
+  "fast": false,
+  "fast_error": 7110
+ },
+ "Donut": {
+  "fast": false,
+  "fast_error": 218
+ },
+ "Doublelay": {
+  "fast": false,
+  "fast_error": 37798
+ },
+ "DrumSlam": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "DubCenter": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "DubPlate2": {
+  "fast": false,
+  "fast_error": 14495
+ },
+ "DubSub": {
+  "fast": false,
+  "fast_error": 8
+ },
+ "DubSub2": {
+  "fast": false,
+  "fast_error": 685
+ },
+ "Dynamics": {
+  "fast": false,
+  "fast_error": 4
+ },
+ "Dynamics2": {
+  "fast": false,
+  "fast_error": 1289
+ },
+ "Dynamics3": {
+  "fast": false,
+  "fast_error": 32767
+ },
+ "Echojam": {
+  "fast": false,
+  "fast_error": 747
+ },
+ "Edge": {
+  "fast": false,
+  "fast_error": 420
+ },
+ "Ensemble": {
+  "fast": false,
+  "fast_error": 2884
+ },
+ "Exciter": {
+  "fast": false,
+  "fast_error": 5
+ },
+ "FathomFive": {
+  "fast": false,
+  "fast_error": 22
+ },
+ "FireAmp": {
+  "fast": false,
+  "fast_error": 9
+ },
+ "Flutter": {
+  "fast": false,
+  "fast_error": 37942
+ },
+ "Flutter2": {
+  "fast": false,
+  "fast_error": 39308
+ },
+ "Fracture2": {
+  "fast": false,
+  "fast_error": 64215
+ },
+ "FromTape": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "Galactic2": {
+  "fast": false,
+  "fast_error": 207
+ },
+ "Galactic3": {
+  "fast": false,
+  "fast_error": 39601
+ },
+ "GalacticVibe": {
+  "fast": false,
+  "fast_error": 33700
+ },
+ "Gatelope": {
+  "fast": false,
+  "fast_error": 119
+ },
+ "GlitchShifter": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "GrindAmp": {
+  "fast": false,
+  "fast_error": 117
+ },
+ "Highpass2": {
+  "fast": false,
+  "fast_error": 74
+ },
+ "HipCrush": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "Hombre": {
+  "fast": false,
+  "fast_error": 4018
+ },
+ "Huge": {
+  "fast": false,
+  "fast_error": 23066
+ },
+ "Infrasonic": {
+  "fast": false,
+  "fast_error": 939
+ },
+ "IronOxide5": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "Isolator2": {
+  "fast": false,
+  "fast_error": 443
+ },
+ "Isolator3": {
+  "fast": false,
+  "fast_error": 20007
+ },
+ "Kalman": {
+  "fast": false,
+  "fast_error": 12
+ },
+ "LeadAmp": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "LilAmp": {
+  "fast": false,
+  "fast_error": 658
+ },
+ "Logical4": {
+  "fast": false,
+  "fast_error": 9
+ },
+ "Lowpass2": {
+  "fast": false,
+  "fast_error": 15
+ },
+ "MackEQ": {
+  "fast": false,
+  "fast_error": 46
+ },
+ "Mackity": {
+  "fast": false,
+  "fast_error": 8
+ },
+ "MatrixVerb": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "Melt": {
+  "fast": false,
+  "fast_error": 393
+ },
+ "MidAmp": {
+  "fast": false,
+  "fast_error": 865
+ },
+ "MultiBandDistortion": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "NCSeventeen": {
+  "fast": false,
+  "fast_error": 46
+ },
+ "Nikola": {
+  "fast": false,
+  "fast_error": 5
+ },
+ "Noise": {
+  "fast": false,
+  "fast_error": 8908
+ },
+ "NonlinearSpace": {
+  "fast": false,
+  "fast_error": 395
+ },
+ "NotJustAnotherDither": {
+  "fast": false,
+  "fast_error": 32
+ },
+ "OrbitKick": {
+  "fast": false,
+  "fast_error": 16696
+ },
+ "Overheads": {
+  "fast": false,
+  "fast_error": 7
+ },
+ "Parametric": {
+  "fast": false,
+  "fast_error": 28
+ },
+ "PaulDither": {
+  "fast": false,
+  "fast_error": 75
+ },
+ "PaulWide": {
+  "fast": false,
+  "fast_error": 16
+ },
+ "PitchDelay": {
+  "fast": false,
+  "fast_error": 4478
+ },
+ "PitchNasty": {
+  "fast": false,
+  "fast_error": 32352
+ },
+ "PlatinumSlew": {
+  "fast": false,
+  "fast_error": 514
+ },
+ "PocketVerbs": {
+  "fast": false,
+  "fast_error": 22507
+ },
+ "Pockey": {
+  "fast": false,
+  "fast_error": 16976
+ },
+ "Pockey2": {
+  "fast": false,
+  "fast_error": 14
+ },
+ "Point": {
+  "fast": false,
+  "fast_error": 12
+ },
+ "PointyDeluxe": {
+  "fast": false,
+  "fast_error": 25623
+ },
+ "PointyGuitar": {
+  "fast": false,
+  "fast_error": 840
+ },
+ "Pop": {
+  "fast": false,
+  "fast_error": 4906
+ },
+ "Pop3": {
+  "fast": false,
+  "fast_error": 19474
+ },
+ "PowerSag": {
+  "fast": false,
+  "fast_error": 50
+ },
+ "PowerSag2": {
+  "fast": false,
+  "fast_error": 16384
+ },
+ "Preponderant": {
+  "fast": false,
+  "fast_error": 7187
+ },
+ "Pressure4": {
+  "fast": false,
+  "fast_error": 15
+ },
+ "Pressure5": {
+  "fast": false,
+  "fast_error": 41175
+ },
+ "Pressure6": {
+  "fast": false,
+  "fast_error": 223
+ },
+ "PunchyDeluxe": {
+  "fast": false,
+  "fast_error": 1747
+ },
+ "PurestConsole4Buss": {
+  "fast": false,
+  "fast_error": 135
+ },
+ "PurestConsole4Channel": {
+  "fast": false,
+  "fast_error": 109
+ },
+ "PurestSquish": {
+  "fast": false,
+  "fast_error": 5
+ },
+ "Pyewacket": {
+  "fast": false,
+  "fast_error": 535
+ },
+ "RawGlitters": {
+  "fast": false,
+  "fast_error": 4096
+ },
+ "RawTimbers": {
+  "fast": false,
+  "fast_error": 4096
+ },
+ "Recurve": {
+  "fast": false,
+  "fast_error": 752
+ },
+ "Reverb": {
+  "fast": false,
+  "fast_error": 52140
+ },
+ "Righteous4": {
+  "fast": false,
+  "fast_error": 5805
+ },
+ "RingModulator": {
+  "fast": false,
+  "fast_error": 2448
+ },
+ "Shape": {
+  "fast": false,
+  "fast_error": 7
+ },
+ "Slew3": {
+  "fast": false,
+  "fast_error": 2249
+ },
+ "Slew4": {
+  "fast": false,
+  "fast_error": 468
+ },
+ "SlewSonic": {
+  "fast": false,
+  "fast_error": 369
+ },
+ "SmoothEQ": {
+  "fast": false,
+  "fast_error": 4
+ },
+ "SmoothEQ2": {
+  "fast": false,
+  "fast_error": 17
+ },
+ "SmoothEQ3": {
+  "fast": false,
+  "fast_error": 29
+ },
+ "SoftClock": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "SoftClock2": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "SoftClock3": {
+  "fast": false,
+  "fast_error": 17322
+ },
+ "SpatializeDither": {
+  "fast": false,
+  "fast_error": 4096
+ },
+ "Spiral3": {
+  "fast": false,
+  "fast_error": 81
+ },
+ "StarChild": {
+  "fast": false,
+  "fast_error": 16
+ },
+ "StarChild2": {
+  "fast": false,
+  "fast_error": 16
+ },
+ "StereoChorus": {
+  "fast": false,
+  "fast_error": 29433
+ },
+ "StereoDoubler": {
+  "fast": false,
+  "fast_error": 41571
+ },
+ "StoneFireComp": {
+  "fast": false,
+  "fast_error": 24924
+ },
+ "StudioTan": {
+  "fast": false,
+  "fast_error": 284
+ },
+ "Surge": {
+  "fast": false,
+  "fast_error": 49
+ },
+ "SurgeTide": {
+  "fast": false,
+  "fast_error": 31
+ },
+ "Suzan": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "Swell": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "TPDFDither": {
+  "fast": false,
+  "fast_error": 16
+ },
+ "TPDFWide": {
+  "fast": false,
+  "fast_error": 136
+ },
+ "TakeCare": {
+  "fast": false,
+  "fast_error": 2111
+ },
+ "Tape": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "TapeBias": {
+  "fast": false,
+  "fast_error": 85
+ },
+ "TapeDelay2": {
+  "fast": false,
+  "fast_error": 8767
+ },
+ "TapeDither": {
+  "fast": false,
+  "fast_error": 96
+ },
+ "Texturize": {
+  "fast": false,
+  "fast_error": 65516
+ },
+ "TexturizeMS": {
+  "fast": false,
+  "fast_error": 32759
+ },
+ "Thunder": {
+  "fast": false,
+  "fast_error": 88
+ },
+ "ToTape5": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "ToTape6": {
+  "fast": false,
+  "fast_error": 64880
+ },
+ "ToTape7": {
+  "fast": false,
+  "fast_error": 51383
+ },
+ "ToTape8": {
+  "fast": false,
+  "fast_error": 62586
+ },
+ "ToTape9": {
+  "fast": false,
+  "fast_error": 60432
+ },
+ "TransDesk": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "TremoSquare": {
+  "fast": false,
+  "fast_error": 29490
+ },
+ "Tremolo": {
+  "fast": false,
+  "fast_error": 192
+ },
+ "TripleSpread": {
+  "fast": false,
+  "fast_error": 65535
+ },
+ "VariMu": {
+  "fast": false,
+  "fast_error": 43
+ },
+ "VerbThic": {
+  "fast": false,
+  "fast_error": 4463
+ },
+ "VerbTiny": {
+  "fast": false,
+  "fast_error": 4117
+ },
+ "Vibrato": {
+  "fast": false,
+  "fast_error": 20438
+ },
+ "VinylDither": {
+  "fast": false,
+  "fast_error": 202
+ },
+ "VoiceOfTheStarship": {
+  "fast": false,
+  "fast_error": 9482
+ },
+ "Weave": {
+  "fast": false,
+  "fast_error": 92
+ },
+ "Weight": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "X2Buss": {
+  "fast": false,
+  "fast_error": 68
+ },
+ "XBandpass": {
+  "fast": false,
+  "fast_error": 46885
+ },
+ "XHighpass": {
+  "fast": false,
+  "fast_error": 4931
+ },
+ "XNotch": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "XRegion": {
+  "fast": false,
+  "fast_error": 812
+ },
+ "YBandpass": {
+  "fast": false,
+  "fast_error": 9
+ },
+ "YHighpass": {
+  "fast": false,
+  "fast_error": 73
+ },
+ "YLowpass": {
+  "fast": false,
+  "fast_error": 13326
+ },
+ "YNotBandpass": {
+  "fast": false,
+  "fast_error": 77
+ },
+ "YNotHighpass": {
+  "fast": false,
+  "fast_error": 5287
+ },
+ "YNotLowpass": {
+  "fast": false,
+  "fast_error": 11282
+ },
+ "YNotNotch": {
+  "fast": false,
+  "fast_error": 16820
+ },
+ "YNotch": {
+  "fast": false,
+  "fast_error": 16820
+ },
+ "ZAcidLowpass": {
+  "fast": false,
+  "fast_error": 35822
+ },
+ "ZBandpass": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "ZBandpass2": {
+  "fast": false,
+  "fast_error": 4
+ },
+ "ZHighpass": {
+  "fast": false,
+  "fast_error": 6
+ },
+ "ZHighpass2": {
+  "fast": false,
+  "fast_error": 1933
+ },
+ "ZLowpass": {
+  "fast": false,
+  "fast_error": 3
+ },
+ "ZLowpass2": {
+  "fast": false,
+  "fast_error": 17
+ },
+ "ZNotch": {
+  "fast": false,
+  "fast_error": 9
+ },
+ "ZNotch2": {
+  "fast": false,
+  "fast_error": 204
+ },
+ "ZOutputStage": {
+  "fast": false,
+  "fast_error": 147
+ },
+ "ZRegion": {
+  "fast": false,
+  "fast_error": 42632
+ },
+ "ZRegion2": {
+  "fast": false,
+  "fast_error": 16042
+ },
+ "kAlienSpaceship": {
+  "fast": false,
+  "fast_error": 4
+ },
+ "kCathedral": {
+  "fast": false,
+  "fast_error": 494
+ },
+ "kCathedral3": {
+  "fast": false,
+  "fast_error": 24812
+ },
+ "kCathedral4": {
+  "fast": false,
+  "fast_error": 1498
+ },
+ "kCathedral5": {
+  "fast": false,
+  "fast_error": 170
+ },
+ "kChamberAR": {
+  "fast": false,
+  "fast_error": 4620
+ },
+ "kCosmos": {
+  "fast": false,
+  "fast_error": 181
+ },
+ "kCyberCity": {
+  "fast": false,
+  "fast_error": 258
+ },
+ "kGuitarHall2": {
+  "fast": false,
+  "fast_error": 50
+ },
+ "kPlate140": {
+  "fast": false,
+  "fast_error": 2488
+ },
+ "kPlate240": {
+  "fast": false,
+  "fast_error": 1577
+ },
+ "kPlateA": {
+  "fast": false,
+  "fast_error": 2156
+ },
+ "kPlateB": {
+  "fast": false,
+  "fast_error": 1889
+ },
+ "kPlateC": {
+  "fast": false,
+  "fast_error": 1735
+ },
+ "kPlateD": {
+  "fast": false,
+  "fast_error": 2759
+ },
+ "kRockstar": {
+  "fast": false,
+  "fast_error": 225
+ },
+ "kRockstar2": {
+  "fast": false,
+  "fast_error": 22
+ },
+ "kStation": {
+  "fast": false,
+  "fast_error": 35
+ },
+ "kWoodRoom": {
+  "fast": false,
+  "fast_error": 133
+ }
+}

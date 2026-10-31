@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airwindows-py"
+dynamic = ["version"]
+description = "Chris Johnson's Airwindows plug-ins as audiodsp audio nodes for CPython and MicroPython"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE", "third_party/airwindows/LICENSE"]
+requires-python = ">=3.11"
+dependencies = ["pydevices-audiodsp>=0.6.10"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+
+[project.urls]
+Source = "https://github.com/bdbarnett/airwindows-py"
+
+[tool.setuptools]
+package-dir = {"" = "src/cpython"}
+py-modules = ["audioairwindows"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}

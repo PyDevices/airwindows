@@ -1,0 +1,11 @@
+# What this repository builds against and is tested against, one per line:
+# <name> <clone-url> <full 40-character commit>
+#
+# airwindows: the upstream every effect is generated from; tools/awgen and
+#   tests/reference read a checkout of it at this commit (.cache/airwindows-upstream).
+airwindows https://github.com/airwindows/airwindows.git b110fac3991fff7c4655cc2d25d6a3e221f9799c
+# audiodsp: the audio stack the nodes run on (v0.6.10). CI builds the
+#   MicroPython unix port with it at this commit.
+audiodsp https://github.com/PyDevices/audiodsp.git d2c502bdd1a87f12c56aabaf1266305c13201cb0
+# micropython: the interpreter CI builds (v1.29.0).
+micropython https://github.com/micropython/micropython.git 0fd6c573ea815774668bbb16b8e197c8822368b2

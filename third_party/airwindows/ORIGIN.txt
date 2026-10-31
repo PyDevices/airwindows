@@ -1,0 +1,28 @@
+Airwindows by Chris Johnson: the source of every effect in the
+audioairwindows module.
+
+Source: https://github.com/airwindows/airwindows
+Commit: b110fac3991fff7c4655cc2d25d6a3e221f9799c
+License: MIT, see LICENSE (Copyright (c) 2018 Chris Johnson)
+
+tools/awgen translates, for each plug-in under
+plugins/LinuxVST/src/<Name>/, the float processReplacing loop of
+<Name>Proc.cpp and the constructor, parameter defaults and setParameter of
+<Name>.cpp into src/airwindows/plugins/<Name>.c. tools/awgen/plugins.json
+lists every plug-in, with upstream's one-line summary and its collections
+(Basic, Recommended, Latest) from upstream's plug-in list.
+
+What the translation changes:
+
+  - int16 in and out, with no dither on the way out;
+  - fixed seeds in place of rand() for the noise and dither generators, so
+    a node renders the same take twice (the reference tests give upstream
+    the same seeds);
+  - a second, single-precision variant of each loop for parts whose FPU
+    has no double or divide, with a polynomial sine in place of libm's.
+    tools/awgen/policy.json names the plug-ins whose single-precision loop
+    is outside the accuracy bar; their fast variant runs the reference
+    arithmetic instead.
+
+Plug-ins the generator does not carry are listed with the reason in
+docs/reference/plugins.md.
