@@ -254,8 +254,8 @@ static int aw_module_exec(PyObject *module) {
         PyModule_AddStringConstant(module, "__revision__", AW_REVISION) < 0 ||
         PyModule_AddIntConstant(module, "FRAMES", AW_FRAMES) < 0 ||
         PyModule_AddIntConstant(module, "FAST_DEFAULT", AW_FAST_DEFAULT) < 0 ||
-        PyModule_AddIntConstant(module, "FIXED_DEFAULT",
-            AW_FAST_DEFAULT && AW_FIXED) < 0) {
+        PyModule_AddIntConstant(module, "TUNED_DEFAULT",
+            AW_FAST_DEFAULT && AW_TUNED) < 0) {
         return -1;
     }
     return 0;

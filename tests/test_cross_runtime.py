@@ -18,7 +18,7 @@ PROBE = pathlib.Path(__file__).resolve().parent / "test_audioairwindows.py"
 
 sys.path.insert(0, str(PROBE.parent))
 from test_audioairwindows import (  # noqa: E402
-    EXPECTED, EXPECTED_FAST, EXPECTED_FIXED)
+    EXPECTED, EXPECTED_FAST, EXPECTED_TUNED)
 import audioairwindows  # noqa: E402
 
 
@@ -35,8 +35,8 @@ def run(interpreter):
 
 class CPythonRendersTheRecordedBytes(unittest.TestCase):
     def test_hashes(self):
-        self.assertEqual(run(sys.executable), EXPECTED_FIXED
-                         if audioairwindows.FIXED else EXPECTED_FAST
+        self.assertEqual(run(sys.executable), EXPECTED_TUNED
+                         if audioairwindows.TUNED else EXPECTED_FAST
                          if audioairwindows.FAST else EXPECTED)
 
 

@@ -302,9 +302,8 @@ static inline float aw_q60f(uint64_t q) {
 
 // --- fixed point ---------------------------------------------------------------------
 
-// A few hot plug-ins also have a fixed-point fast variant (policy.json,
-// "fixed"), written by hand in tools/awgen/fixed/, which runs where plugin.h
-// sets AW_FIXED.
+// For the kernels written by hand for the S3 (tools/awgen/tuned/) that run in
+// fixed point, where the S3's integer multiply-high beat its FPU.
 
 // Fixed-point formats are written Qn: n fraction bits in an int32_t. Every
 // product is aw_mulhi, the top word of the 64-bit product, which is one

@@ -53,12 +53,12 @@ surface [False, True, False, 'TypeError', 'ValueError']
 2 ButterComp2 0xd2c01757
 """
 
-# The fast path in fixed point where a plug-in has it (audioairwindows.FIXED),
-# as ESP32-S3 firmware runs it: rendered by CPython built with
-# AW_FAST_DEFAULT=1 AW_FIXED=1 on x86-64 Linux, and by an ESP32-S3,
-# identically. PurestDrive has a fixed-point variant; the others render as
+# The fast path with the kernels written by hand for the ESP32-S3
+# (audioairwindows.TUNED), as its firmware runs it: rendered by CPython built
+# with AW_FAST_DEFAULT=1 AW_TUNED=1 on x86-64 Linux, and by an ESP32-S3,
+# identically. PurestDrive has one, in fixed point; the others render as
 # above.
-EXPECTED_FIXED = """\
+EXPECTED_TUNED = """\
 surface [False, True, False, 'TypeError', 'ValueError']
 1 Galactic 0x351593b9
 1 Galactic 0x97ed8d18
@@ -137,7 +137,7 @@ def main():
             gc.collect()
             lines.append("%d %s %s" % (channels, name, hex(h)))
             print(lines[-1])
-    expected = EXPECTED_FIXED if getattr(aw, "FIXED", False) else \
+    expected = EXPECTED_TUNED if getattr(aw, "TUNED", False) else \
         EXPECTED_FAST if getattr(aw, "FAST", False) else EXPECTED
     if "\n".join(lines) + "\n" != expected:
         print("FAIL: output differs from EXPECTED")

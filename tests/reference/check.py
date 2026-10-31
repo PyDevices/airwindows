@@ -19,9 +19,9 @@ measured the same way (Galactic's worst was 2.48 LSB before rounding). The resul
 tests/reference/results.json, and --report turns a full set of them into
 docs/reference/accuracy.md.
 
-A plug-in with a hand-written fixed-point fast variant (policy.json,
-"fixed") is built a second time with AW_FIXED=1 and that variant is held to
-the same bar, as `fixed`.
+A plug-in with a fast variant written by hand for the S3 (policy.json,
+"tuned") is built a second time with AW_TUNED=1 and that variant is held to
+the same bar, as `tuned`.
 
 --faults plants two faults in each plug-in and fails if the comparison
 misses the first: a gain error of 1 part in 4096 on one side (1 in 256 for a
@@ -118,23 +118,23 @@ def run_cases(name, exe, fault=0, rates=RATES, sets=None):
     return rows
 
 
-def has_fixed(name):
-    return "AW_FIXED" in (ROOT / "src" / "airwindows" / "plugins" /
+def has_tuned(name):
+    return "AW_TUNED" in (ROOT / "src" / "airwindows" / "plugins" /
                           (name + ".c")).read_text()
 
 
-def with_fixed(rows, fixed_rows):
-    """rows, each with the fixed build's fast variant as `fixed`."""
-    for row, other in zip(rows, fixed_rows):
+def with_tuned(rows, tuned_rows):
+    """rows, each with the tuned build's fast variant as `tuned`."""
+    for row, other in zip(rows, tuned_rows):
         if "fast" in other:
-            row["fixed"] = other["fast"]
+            row["tuned"] = other["fast"]
         elif "error" in other:
             row["error"] = other["error"]
     return rows
 
 
 def variants(rows):
-    return [v for v in ("ref", "fast", "fixed") if any(v in r for r in rows)]
+    return [v for v in ("ref", "fast", "tuned") if any(v in r for r in rows)]
 
 
 def summarize(rows):
@@ -178,43 +178,43 @@ def plant_wrong_param(name, tmp):
 
 
 def check(name, faults):
-    fixed = has_fixed(name)
+    tuned = has_tuned(name)
     try:
         exe = build(name)
-        fixed_exe = build(name, tag="_fixed", defines=["AW_FIXED=1"]) \
-            if fixed else None
+        tuned_exe = build(name, tag="_tuned", defines=["AW_TUNED=1"]) \
+            if tuned else None
     except subprocess.CalledProcessError as e:
         return name, {"pass": False, "build_error": str(e)[-300:]}, []
 
-    def run(exe, fixed_exe, **kw):
+    def run(exe, tuned_exe, **kw):
         rows = run_cases(name, exe, **kw)
-        if fixed_exe:
-            rows = with_fixed(rows, run_cases(name, fixed_exe, **kw))
+        if tuned_exe:
+            rows = with_tuned(rows, run_cases(name, tuned_exe, **kw))
         return rows
 
     def caught_by_any(rows):
         return any(r.get(v, {}).get("max_lsb", 0) > BAR_LSB
-                   for r in rows for v in ("ref", "fast", "fixed"))
+                   for r in rows for v in ("ref", "fast", "tuned"))
 
-    rows = run(exe, fixed_exe)
+    rows = run(exe, tuned_exe)
     summary = summarize(rows)
     if faults and INDEX[name]["params"]:
         # Planted faults, each at one rate over the settings that move it.
         caught = {}
-        gain = run(exe, fixed_exe, fault=1, rates=[48000])
+        gain = run(exe, tuned_exe, fault=1, rates=[48000])
         caught["gain"] = caught_by_any(gain)
         if not caught["gain"]:
             # 1 part in 4096 moves no sample past the bar when the output
             # stays under about 12000; a plug-in that quiet gets 1 in 256.
-            gain = run(exe, fixed_exe, fault=2, rates=[48000])
+            gain = run(exe, tuned_exe, fault=2, rates=[48000])
             caught["gain"] = caught_by_any(gain)
         tmp = BIN / "faults"
         tmp.mkdir(parents=True, exist_ok=True)
         planted = plant_wrong_param(name, tmp)
         fexe = build(name, planted, tag="_fault")
-        ffixed = build(name, planted, tag="_fault_fixed",
-                       defines=["AW_FIXED=1"]) if fixed else None
-        wrong = run(fexe, ffixed, rates=[48000], sets=param_sets(name)[5:])
+        ftuned = build(name, planted, tag="_fault_tuned",
+                       defines=["AW_TUNED=1"]) if tuned else None
+        wrong = run(fexe, ftuned, rates=[48000], sets=param_sets(name)[5:])
         caught["wrong_param"] = caught_by_any(wrong)
         summary["faults_caught"] = caught
     return name, summary, rows
@@ -300,7 +300,7 @@ def main(argv=None):
                 name, "PASS" if s.get("pass") else "FAIL",
                 s.get("ref", {}).get("max_lsb"),
                 s.get("fast", {}).get("max_lsb"),
-                " fixed %s" % s["fixed"]["max_lsb"] if "fixed" in s else "",
+                " tuned %s" % s["tuned"]["max_lsb"] if "tuned" in s else "",
                 " faults %s" % s["faults_caught"] if "faults_caught" in s
                 else ""), flush=True)
             args.out.write_text(json.dumps(results, indent=1,

@@ -128,9 +128,10 @@ static void aw_PurestDrive_process_ref(void *aw_state, int16_t *aw_out,
 static const uint32_t aw_PurestDrive_offsets_ref[] = {offsetof(aw_PurestDrive_ref_t, A)};
 #endif
 
-#if AW_BUILD_FAST && AW_FIXED
-// PurestDrive in Q30 fixed point, for parts whose integer multiplier beats
-// their FPU (kernel_common.h, AW_FIXED). Upstream's loop, per side:
+#if AW_BUILD_FAST && AW_TUNED
+// PurestDrive for the ESP32-S3 (plugin.h, AW_TUNED), in Q30 and Q31 fixed
+// point: there the integer multiply-high beats the FPU, 2.9 % of a core
+// against 3.5 % for the translated float loop. Upstream's loop, per side:
 //
 //     sine = sin(input)
 //     apply = |previous + sine| / 2 * drive
@@ -138,8 +139,9 @@ static const uint32_t aw_PurestDrive_offsets_ref[] = {offsetof(aw_PurestDrive_re
 //     previous = sine
 //
 // The input is int16, so it is exact in Q31, and every product keeps at
-// least 29 fraction bits, about 2e-9: far inside the 1 LSB bar. The output blend is
-// written input + apply * (sine - input), the same value in one multiply.
+// least 29 fraction bits, about 2e-9: far inside the 1 LSB bar. The output
+// blend is written input + apply * (sine - input), the same value in one
+// multiply.
 // Upstream's denormal guard adds noise near 1e-17 to a zero input; in Q30
 // that rounds to zero, so it is left out, with its noise generators.
 typedef struct {
@@ -197,7 +199,7 @@ static void aw_PurestDrive_process_fast(void *aw_state, int16_t *aw_out,
 static const uint32_t aw_PurestDrive_offsets_fast[] = {offsetof(aw_PurestDrive_fast_t, A)};
 #endif
 
-#if AW_BUILD_FAST && !AW_FIXED
+#if AW_BUILD_FAST && !AW_TUNED
 typedef struct {
     double aw_sample_rate;
     uint32_t aw_rand;

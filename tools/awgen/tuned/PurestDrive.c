@@ -1,5 +1,6 @@
-// PurestDrive in Q30 fixed point, for parts whose integer multiplier beats
-// their FPU (kernel_common.h, AW_FIXED). Upstream's loop, per side:
+// PurestDrive for the ESP32-S3 (plugin.h, AW_TUNED), in Q30 and Q31 fixed
+// point: there the integer multiply-high beats the FPU, 2.9 % of a core
+// against 3.5 % for the translated float loop. Upstream's loop, per side:
 //
 //     sine = sin(input)
 //     apply = |previous + sine| / 2 * drive
@@ -7,8 +8,9 @@
 //     previous = sine
 //
 // The input is int16, so it is exact in Q31, and every product keeps at
-// least 29 fraction bits, about 2e-9: far inside the 1 LSB bar. The output blend is
-// written input + apply * (sine - input), the same value in one multiply.
+// least 29 fraction bits, about 2e-9: far inside the 1 LSB bar. The output
+// blend is written input + apply * (sine - input), the same value in one
+// multiply.
 // Upstream's denormal guard adds noise near 1e-17 to a zero input; in Q30
 // that rounds to zero, so it is left out, with its noise generators.
 typedef struct {

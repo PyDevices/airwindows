@@ -63,16 +63,16 @@ only when the input is zero, the one case where it changes the sum. And a
 value upstream works out for both arms of a branch is worked out inside the
 arm that uses it.
 
-On the S3 a few hot plug-ins run fixed point instead, where it measured
-cheaper than the float loop: integer adds and the 32-bit multiply-high
-(`mulsh`) beat the FPU there. Each is written by hand in
-`tools/awgen/fixed/<Name>.c` and named in `policy.json` (`"fixed": true`),
-and the generator puts it beside the translated float loop. Xtensa builds
-run it (`audioairwindows.FIXED`); everything else, the P4 included, keeps
-the float loop. It is plain C, so a desktop built with `AW_FIXED=1` runs
-the same arithmetic, and `tests/reference/check.py` holds it to the same
-bar as `fixed`. PurestDrive is the first: its sine, drive and blend in
-Q30 and Q31.
+On the S3 a few hot plug-ins run a fast variant written by hand instead,
+where it measured cheaper than the translated loop. Each lives in
+`tools/awgen/tuned/<Name>.c`, is named in `policy.json` (`"tuned": true`),
+and the generator puts it beside the translated loop. Xtensa builds run it
+(`audioairwindows.TUNED`); everything else, the P4 included, keeps the
+translated loop. It is plain C apart from single instructions with a C
+twin, so a desktop built with `AW_TUNED=1` runs the same arithmetic, and
+`tests/reference/check.py` holds it to the same bar as `tuned`. PurestDrive
+is the first: its sine, drive and blend in Q30 and Q31 fixed point, where
+the S3's integer multiply-high (`mulsh`) beats its FPU.
 
 Single precision isn't close enough for every plug-in. A long recursive
 filter, or a phase that grows for seconds, drifts from upstream by more
@@ -84,7 +84,7 @@ them, with how far their single-precision loop strayed.
 ESP32 firmware builds only the fast variant and other targets only the
 reference; `AIRWINDOWS_VARIANT` (`fast` or `ref`) overrides it, and
 `audioairwindows.FAST` says which one a build runs, and
-`audioairwindows.FIXED` whether its fast path runs fixed point.
+`audioairwindows.TUNED` whether its fast path runs the S3's tuned kernels.
 
 ## How close it stays
 
@@ -130,7 +130,7 @@ The second column is the effect alone:
 | Effect | Pulled from Python | Pulled from C |
 |---|---|---|
 | Galactic | 36.2 % | 25.7 % |
-| PurestDrive (fixed point) | 10.6 % | 2.9 % |
+| PurestDrive (tuned, fixed point) | 10.6 % | 2.9 % |
 | ButterComp2 | 19.8 % | 12.1 % |
 | All three | 49.8 % | 39.1 % |
 
