@@ -56,16 +56,16 @@ surface [False, True, False, 'TypeError', 'ValueError']
 # The fast path with the kernels written by hand for the ESP32-S3
 # (audioairwindows.TUNED), as its firmware runs it: rendered by CPython built
 # with AW_FAST_DEFAULT=1 AW_TUNED=1 on x86-64 Linux, and by an ESP32-S3,
-# identically. PurestDrive has one, in fixed point; the others render as
+# identically. Galactic and PurestDrive have one; ButterComp2 renders as
 # above.
 EXPECTED_TUNED = """\
 surface [False, True, False, 'TypeError', 'ValueError']
-1 Galactic 0x351593b9
-1 Galactic 0x97ed8d18
+1 Galactic 0x8c2aa635
+1 Galactic 0xa35487aa
 1 PurestDrive 0x2462eeca
 1 ButterComp2 0x9bea3bd3
-2 Galactic 0x72ff9c79
-2 Galactic 0x4b0460d8
+2 Galactic 0xd03b00e1
+2 Galactic 0x40815d12
 2 PurestDrive 0xd0538bd6
 2 ButterComp2 0xd2c01757
 """

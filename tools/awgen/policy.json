@@ -8,7 +8,8 @@
   ],
   "phase": [
    "vibM"
-  ]
+  ],
+  "tuned": true
  },
  "DitherFloat": {
   "skip": "a demonstration of upstream's dither for 32-bit float output; this module's output is 16-bit, and that dither is the step every port leaves out"
