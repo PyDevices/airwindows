@@ -4,10 +4,14 @@
 
 Plays two seconds of stereo noise at 48 kHz through each effect, and then
 through all three chained (PurestDrive into ButterComp2 into Galactic),
-pulling 256-frame blocks the way an audio output does, and prints the time
-per block and the share of one core that real time takes. The source hands over its
-whole buffer at once, so the figure is the effect and its binding, with the
-source's share negligible.
+pulling 256-frame blocks, and prints the share of one core that real time
+takes, twice. The first figure pulls each block from Python, as this bench
+always has. Each of those pulls allocates a little, so the collector runs
+every few blocks and scans the noise and Galactic's delay lines: on a board
+that is up to a fifth of a core, and it moves with the heap. The second
+pulls from C with audiopump.pull, as an audio output does, which allocates
+nothing, so it is the effect and its binding alone. The source hands over
+its whole buffer at once, so its share is negligible.
 
 Run it with CPython or MicroPython, on a desktop or a board:
 
@@ -24,6 +28,11 @@ import time
 
 import audioairwindows as aw
 import audiocore
+
+try:
+    import audiopump
+except ImportError:
+    audiopump = None
 
 RATE = 48000
 SECONDS = 2
@@ -49,16 +58,26 @@ def noise():
     return values
 
 
-def pull(make, values):
+def pull_blocks(node, native):
+    """BLOCKS blocks from node, in microseconds."""
+    if native:
+        status = bytearray(audiopump.STATUS_BYTES)
+        start = clock()
+        audiopump.pull(node, BLOCKS, status)
+        return since(clock(), start)
+    start = clock()
+    for _ in range(BLOCKS):
+        audiocore.get_buffer(node)
+    return since(clock(), start)
+
+
+def pull(make, values, native=False):
     """The best of ROUNDS, in microseconds per block."""
     best = None
     for _ in range(ROUNDS):
         node = make(audiocore.RawSample(values, sample_rate=RATE,
                                         channel_count=2))
-        start = clock()
-        for _ in range(BLOCKS):
-            audiocore.get_buffer(node)
-        took = since(clock(), start)
+        took = pull_blocks(node, native)
         best = took if best is None or took < best else best
         if hasattr(node, "deinit"):
             node.deinit()
@@ -67,16 +86,13 @@ def pull(make, values):
     return best / BLOCKS
 
 
-def pull_chain(values):
+def pull_chain(values, native=False):
     """pull() for the chain: the last node's get_buffer pulls the others."""
     best = None
     for _ in range(ROUNDS):
         chain = Chain(audiocore.RawSample(values, sample_rate=RATE,
                                           channel_count=2))
-        start = clock()
-        for _ in range(BLOCKS):
-            audiocore.get_buffer(chain.verb)
-        took = since(clock(), start)
+        took = pull_blocks(chain.verb, native)
         best = took if best is None or took < best else best
         chain.deinit()
         chain = None
@@ -115,18 +131,22 @@ def main():
     values = noise()
     block_us = 256 * 1000000 / RATE
     print("audioairwindows", aw.__version__, getattr(aw, "__revision__", "?"),
+          "fixed point" if getattr(aw, "FIXED", False) else
           "fast path" if getattr(aw, "FAST", False) else "reference")
+    modes = (False, True) if audiopump else (False,)
+    print("%% of one core at 48 kHz stereo, pulled from Python%s" % (
+        " and from C" if audiopump else ""))
     for name, make in (
             ("Galactic", through(aw.Galactic)),
             ("PurestDrive", through(aw.PurestDrive, drive=1.0)),
             ("ButterComp2", through(aw.ButterComp2, compress=1.0)),
             ("All three", None)):
         if make is None:
-            cost = pull_chain(values)
+            costs = [pull_chain(values, native) for native in modes]
         else:
-            cost = pull(make, values)
-        print("%-12s %7.1f us per block, %5.2f %% of one core at 48 kHz stereo"
-              % (name, cost, 100 * cost / block_us))
+            costs = [pull(make, values, native) for native in modes]
+        print("%-12s" % name + "".join(
+            " %6.2f %%" % (100 * c / block_us) for c in costs))
 
 
 main()

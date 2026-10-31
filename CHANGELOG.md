@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- On the ESP32-S3, every plug-in's fast path reads and writes its int16
+  samples in one instruction each, which takes about a tenth off Galactic,
+  PurestDrive and ButterComp2 and renders the same bytes.
+- `tools/bench.py` also times each effect pulled from C, as an audio output
+  pulls it, which leaves out the garbage collection that pulling from
+  Python costs.
+
 - Every node describes its knobs: `parameters()` gives each one's keyword,
   upstream's display name and its default, and `get(name)` reads where a
   knob is ([the node](docs/reference/effects.md)).

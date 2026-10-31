@@ -132,8 +132,28 @@ static inline int aw_rand_next(uint32_t *state) {
 
 // --- int16 in and out -----------------------------------------------------------
 
-#define AW_IN_L(p) ((float)(p)[0] * (1.0f / 32768.0f))
-#define AW_IN_R(p, ch) ((float)(p)[(ch) - 1] * (1.0f / 32768.0f))
+// Xtensa's FPU converts between int and float with a power-of-two scale in
+// the one instruction (float.s, floor.s), where GCC spends a multiply and a
+// few compares around it. These give the same result as the C beside them,
+// so a desktop build tests what the board runs.
+#if defined(__XTENSA__) && defined(__XCHAL_HAVE_FP) && __XCHAL_HAVE_FP
+#define AW_XTENSA_FP 1
+#else
+#define AW_XTENSA_FP 0
+#endif
+
+static inline float aw_from_s16(int32_t sample) {
+    #if AW_XTENSA_FP
+    float r;
+    __asm__ ("float.s %0, %1, 15" : "=f" (r) : "a" (sample));
+    return r;
+    #else
+    return (float)sample * (1.0f / 32768.0f);
+    #endif
+}
+
+#define AW_IN_L(p) aw_from_s16((p)[0])
+#define AW_IN_R(p, ch) aw_from_s16((p)[(ch) - 1])
 
 static inline int16_t aw_to_s16(float sample) {
     float scaled = floorf(sample * 32768.0f + 0.5f);
@@ -149,6 +169,14 @@ static inline int16_t aw_to_s16(float sample) {
 // aw_to_s16 with no floorf call: the same result for every input but NaN.
 static inline int16_t aw_to_s16_fast(float sample) {
     const float scaled = sample * 32768.0f + 0.5f;
+    #if AW_XTENSA_FP
+    // floor.s saturates out of range, and the clamp is two instructions.
+    int32_t whole;
+    __asm__ ("floor.s %0, %1, 0" : "=a" (whole) : "f" (scaled));
+    whole = whole > 32767 ? 32767 : whole;
+    whole = whole < -32768 ? -32768 : whole;
+    return (int16_t)whole;
+    #else
     if (scaled >= 32767.0f) {
         return 32767;
     }
@@ -160,6 +188,7 @@ static inline int16_t aw_to_s16_fast(float sample) {
         whole -= 1;
     }
     return (int16_t)whole;
+    #endif
 }
 
 // A mono node runs the stereo loop with its one channel on both sides and

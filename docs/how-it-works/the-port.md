@@ -49,7 +49,9 @@ nor a divide (every ESP32). The S3's own cycle counts are why:
 So the fast variant multiplies by reciprocals, worked out once a block
 where the divisor is a setting and by Newton steps where it moves every
 sample; turns small integer powers into multiplies; uses a polynomial
-sine; and rounds to int16 without `floorf`. Code that runs once a block,
+sine; and rounds to int16 without `floorf`. On the S3 the int16 samples go
+in and out in one instruction each (`float.s` and `floor.s` with their
+power-of-two scale), which gives the same values as the C a desktop runs. Code that runs once a block,
 such as working out filter coefficients from the knobs, keeps upstream's
 double.
 
@@ -106,18 +108,24 @@ audio output does):
 | All three | 0.88 to 0.90 % | 0.92 % |
 
 On an ESP32-S3 at 240 MHz with octal PSRAM (a Waveshare ESP32-S3-Touch-LCD-7,
-MicroPython, same script), as a share of one core:
+MicroPython, same script), as a share of one core. The bench pulls each
+block twice over: from Python, as it always has, and from C with
+`audiopump.pull`, as an audio output does. Pulling from Python allocates,
+so the collector runs every few blocks and scans the noise and Galactic's
+delay lines, which costs up to a fifth of a core and moves with the heap.
+The second column is the effect alone:
 
-| Effect | ESP32-S3 |
-|---|---|
-| Galactic | 37.2 % |
-| PurestDrive | 12.0 % |
-| ButterComp2 | 20.9 % |
-| All three | 53.3 % |
+| Effect | Pulled from Python | Pulled from C |
+|---|---|---|
+| Galactic | 36.1 % | 25.7 % |
+| PurestDrive | 11.1 % | 3.5 % |
+| ButterComp2 | 19.8 % | 12.1 % |
+| All three | 50.5 % | 39.7 % |
 
-The hand-written ports these three replaced measured 41.0, 13.2, 20.5 and
-58.3 % on the same board, so the generated code is as fast or faster except
-for ButterComp2, which is 0.4 % of a core slower.
+Before the one-instruction int16 in and out, the same firmware measured
+37.3, 12.0, 20.9 and 53.6 % pulled from Python (26.8, 4.4, 13.3 and 42.9 %
+from C). The hand-written ports these three replaced measured 41.0, 13.2,
+20.5 and 58.3 % from Python on the same board.
 
 A plug-in's cost on a board depends on whether it runs the fast path;
 [the list](../reference/plugins.md#full-precision-on-boards) names the ones
