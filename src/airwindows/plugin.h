@@ -8,6 +8,18 @@
 
 #include <stdint.h>
 
+// Whether a fast variant runs fixed point where a plug-in has it (policy.json,
+// "fixed"): on Xtensa, as the ESP32-S3, whose integer multiplier measured
+// cheaper than its FPU. Elsewhere, the P4 among them, it stays float. A
+// desktop build may set it to test what the S3 runs.
+#ifndef AW_FIXED
+#if defined(__XTENSA__)
+#define AW_FIXED 1
+#else
+#define AW_FIXED 0
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

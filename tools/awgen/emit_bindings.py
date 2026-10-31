@@ -93,6 +93,8 @@ def mp_module(names):
 #include "py/obj.h"
 #include "py/objstr.h"
 
+#include "airwindows/plugin.h"
+
 // Declared here rather than by including Airwindows.h, and this file is listed
 // first in micropython.mk: MicroPython 1.29's qstr scan fails when the first
 // qstr of the first source sits in a header (audiocore/__init__.h has one).
@@ -131,6 +133,13 @@ static const mp_rom_map_elem_t audioairwindows_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_FAST), MP_ROM_TRUE },
     #else
     { MP_ROM_QSTR(MP_QSTR_FAST), MP_ROM_FALSE },
+    #endif
+    // Whether that fast path runs fixed point where a plug-in has it
+    // (airwindows/plugin.h, AW_FIXED).
+    #if AW_FAST_DEFAULT && AW_FIXED
+    { MP_ROM_QSTR(MP_QSTR_FIXED), MP_ROM_TRUE },
+    #else
+    { MP_ROM_QSTR(MP_QSTR_FIXED), MP_ROM_FALSE },
     #endif""")
     for n in names:
         out += [GUARD.format(n=n),

@@ -55,3 +55,5 @@ class Plugin:
     wide: List[str] = field(default_factory=list)
     phase: List[str] = field(default_factory=list)
     fast_as_ref: bool = False
+    # From policy.json: a hand-written fixed-point fast variant in fixed/.
+    fixed: bool = False

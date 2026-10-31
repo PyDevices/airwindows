@@ -33,6 +33,7 @@ __revision__ = _audioairwindows.__revision__
 
 FRAMES = _audioairwindows.FRAMES
 FAST = bool(_audioairwindows.FAST_DEFAULT)
+FIXED = bool(_audioairwindows.FIXED_DEFAULT)
 
 _FIXED = ("sample_rate", "channel_count")
 

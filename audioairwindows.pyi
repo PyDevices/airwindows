@@ -21,6 +21,11 @@ FAST: bool
 firmware does, rather than the reference port. Both meet the same accuracy
 bar against upstream; docs/how-it-works/the-port.md has it."""
 
+FIXED: bool
+"""Whether that fast path runs fixed point in the plug-ins that have one, as
+ESP32-S3 firmware does, where it measured cheaper than the float loop.
+docs/how-it-works/the-port.md names them; they meet the same bar."""
+
 class _Airwindows:
     sample_rate: int
     channel_count: int

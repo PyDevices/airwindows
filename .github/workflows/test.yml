@@ -108,6 +108,12 @@ jobs:
           AW_FAST_DEFAULT=1 python -m pip install --no-build-isolation --force-reinstall --no-deps .
           python -c "import audioairwindows; assert audioairwindows.FAST"
           python tests/test_audioairwindows.py
+      - name: Built with the fast path in fixed point, as ESP32-S3 firmware is, it renders the recorded bytes
+        run: |
+          rm -rf build
+          AW_FAST_DEFAULT=1 AW_FIXED=1 python -m pip install --no-build-isolation --force-reinstall --no-deps .
+          python -c "import audioairwindows; assert audioairwindows.FIXED"
+          python tests/test_audioairwindows.py
 
   # The plug-ins a change reaches against upstream, on a push to main or by
   # hand. Every plug-in is about 530 builds of upstream's C++, shared across
@@ -193,6 +199,11 @@ jobs:
           make -C micropython/ports/unix -j4 USER_C_MODULES=$GITHUB_WORKSPACE/modules BUILD=build-fast CFLAGS_EXTRA=-DAW_FAST_DEFAULT=1
           ./micropython/ports/unix/build-fast/micropython -c "import audioairwindows; assert audioairwindows.FAST"
           ./micropython/ports/unix/build-fast/micropython -X heapsize=8M modules/airwindows/tests/test_audioairwindows.py
+      - name: A unix port with the fast path in fixed point, as ESP32-S3 firmware is, renders the recorded bytes
+        run: |
+          make -C micropython/ports/unix -j4 USER_C_MODULES=$GITHUB_WORKSPACE/modules BUILD=build-fixed CFLAGS_EXTRA="-DAW_FAST_DEFAULT=1 -DAW_FIXED=1"
+          ./micropython/ports/unix/build-fixed/micropython -c "import audioairwindows; assert audioairwindows.FIXED"
+          ./micropython/ports/unix/build-fixed/micropython -X heapsize=8M modules/airwindows/tests/test_audioairwindows.py
       - name: The simpletest and the revision stamp, on MicroPython
         run: |
           ./micropython/ports/unix/build-standard/micropython -X heapsize=8M modules/airwindows/examples/audioairwindows_simpletest.py | tee simpletest.out

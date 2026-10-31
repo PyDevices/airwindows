@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- On the ESP32-S3, PurestDrive runs in fixed point, which takes its cost
+  from 3.5 to 2.9 % of a core. It meets the same bar against upstream;
+  `audioairwindows.FIXED` says whether a build's fast path runs fixed point,
+  and `AW_FIXED=1` builds a desktop that renders the S3's bytes.
 - On the ESP32-S3, every plug-in's fast path reads and writes its int16
   samples in one instruction each, which takes about a tenth off Galactic,
   PurestDrive and ButterComp2 and renders the same bytes.

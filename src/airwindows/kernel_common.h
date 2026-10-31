@@ -300,6 +300,63 @@ static inline float aw_q60f(uint64_t q) {
     return (float)(uint32_t)(q >> 32) * (1.0f / 268435456.0f);
 }
 
+// --- fixed point ---------------------------------------------------------------------
+
+// A few hot plug-ins also have a fixed-point fast variant (policy.json,
+// "fixed"), written by hand in tools/awgen/fixed/, which runs where plugin.h
+// sets AW_FIXED.
+
+// Fixed-point formats are written Qn: n fraction bits in an int32_t. Every
+// product is aw_mulhi, the top word of the 64-bit product, which is one
+// instruction (mulsh) on Xtensa: Qa times Qb gives Q(a + b - 32).
+#define AW_QN(x, n) ((int32_t)((x) * (double)(1ull << (n)) + ((x) < 0 ? -0.5 : 0.5)))
+
+static inline int32_t aw_mulhi(int32_t a, int32_t b) {
+    #if defined(__XTENSA__) && defined(__XCHAL_HAVE_MUL32_HIGH) && __XCHAL_HAVE_MUL32_HIGH
+    // GCC sometimes spells this as three multiplies; the result is the same.
+    int32_t r;
+    __asm__ ("mulsh %0, %1, %2" : "=a" (r) : "a" (a), "a" (b));
+    return r;
+    #else
+    return (int32_t)(((int64_t)a * b) >> 32);
+    #endif
+}
+
+// A knob in 0..1 as Q31, with 1 held just under: an error of 5e-10.
+static inline int32_t aw_q31_from_unit(float x) {
+    return x >= 1.0f ? INT32_MAX : (int32_t)(x * 2147483648.0f);
+}
+
+// sin(x) for |x| <= 1, x in Q31, the result in Q30: the odd Taylor series to
+// x^9, as aw_sin_quarter, worst error 2.5e-8 at the ends. The Horner sum
+// runs in falling formats, Q39 down to Q31, so each step is one aw_mulhi
+// and no shift.
+static inline int32_t aw_sin_q31(int32_t x) {
+    const int32_t x2 = aw_mulhi(x, x);                         // Q30
+    int32_t q = aw_mulhi(x2, AW_QN(1.0 / 362880.0, 39));       // Q37
+    q = aw_mulhi(x2, q + AW_QN(-1.0 / 5040.0, 37));            // Q35
+    q = aw_mulhi(x2, q + AW_QN(1.0 / 120.0, 35));              // Q33
+    q = aw_mulhi(x2, q + AW_QN(-1.0 / 6.0, 33));               // Q31
+    return (x >> 1) + aw_mulhi(x, q);                          // Q30
+}
+
+// Qn to int16 as aw_to_s16 rounds a float: floor(x * 32768 + 0.5), clamped.
+static inline int16_t aw_qn_to_s16(int32_t x, int n) {
+    int32_t v = (x + (1 << (n - 16))) >> (n - 15);
+    v = v > 32767 ? 32767 : v;
+    v = v < -32768 ? -32768 : v;
+    return (int16_t)v;
+}
+
+#define AW_OUT_Q(p, ch, l, r, n) do { \
+        if ((ch) == 2) { \
+            (p)[0] = aw_qn_to_s16((l), (n)); \
+            (p)[1] = aw_qn_to_s16((r), (n)); \
+        } else { \
+            (p)[0] = aw_qn_to_s16((int32_t)(((int64_t)(l) + (r)) >> 1), (n)); \
+        } \
+} while (0)
+
 // 1 / d in multiplies and adds: an estimate from the exponent bits, then
 // three Newton steps, within two float ulps. The ESP32's FPU has no divide,
 // so `/` is a libgcc call that costs several times this. Zero, denormals
