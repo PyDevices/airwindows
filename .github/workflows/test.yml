@@ -1,16 +1,74 @@
 name: test
 
+# Each change runs the jobs that cover what it changed: tools/ci_scope.py reads
+# the diff and says which. A change to documentation alone runs nothing. A pull
+# request runs the cpython job on 3.12 alone unless the C sources, the packaging
+# or the pins changed. A push to main is scoped to what that push changed, and
+# runs the reference job for the plug-ins whose kernels changed (all of them when
+# the generator, the shared headers, the harness or the pins changed). A manual
+# run, or a push with no earlier commit to compare with, runs everything.
 on:
   push:
+    branches: [main]
+    paths:
+      - '**'
+      - '!**.md'
+      - '!docs/**'
+      - '!LICENSE'
+      - '!NOTICE'
+      - '!**/LICENSE'
+      - 'docs/reference/plugins.md'
   pull_request:
+    # The same list as for push.
+    paths:
+      - '**'
+      - '!**.md'
+      - '!docs/**'
+      - '!LICENSE'
+      - '!NOTICE'
+      - '!**/LICENSE'
+      - 'docs/reference/plugins.md'
   workflow_dispatch:
 
+# A newer commit on a pull request replaces the run for the older one. Pushes to
+# main are never cancelled: each is checked only for its own changes.
+concurrency:
+  group: test-${{ github.ref }}-${{ github.event_name == 'pull_request' && 'pr' || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
 jobs:
+  scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      cpython: ${{ steps.scope.outputs.cpython }}
+      versions: ${{ steps.scope.outputs.versions }}
+      micropython: ${{ steps.scope.outputs.micropython }}
+      reference: ${{ steps.scope.outputs.reference }}
+      plugins: ${{ steps.scope.outputs.plugins }}
+      shards: ${{ steps.scope.outputs.shards }}
+      shard_count: ${{ steps.scope.outputs.shard_count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scope
+        id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 tools/ci_scope.py --event "$EVENT" --base "$BASE" --github
+
   cpython:
+    needs: scope
+    if: needs.scope.outputs.cpython == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.11", "3.12", "3.13"]
+        python: ${{ fromJSON(needs.scope.outputs.versions) }}
     steps:
       - uses: actions/checkout@v4
       - name: Read the pins from DEPENDENCIES.lock
@@ -51,15 +109,17 @@ jobs:
           python -c "import audioairwindows; assert audioairwindows.FAST"
           python tests/test_audioairwindows.py
 
-  # Every plug-in against upstream, on a push to main or by hand: about
-  # 530 builds of upstream's C++, shared across eight runners.
+  # The plug-ins a change reaches against upstream, on a push to main or by
+  # hand. Every plug-in is about 530 builds of upstream's C++, shared across
+  # eight runners; one changed kernel is one build on one runner.
   reference:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    needs: scope
+    if: github.event_name != 'pull_request' && needs.scope.outputs.reference != ''
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: ${{ fromJSON(needs.scope.outputs.shards) }}
     steps:
       - uses: actions/checkout@v4
       - name: Read the pins from DEPENDENCIES.lock
@@ -76,8 +136,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Shard ${{ matrix.shard }} of 8, within the bar, with planted faults
-        run: python tests/reference/check.py --faults --jobs 4 --shard ${{ matrix.shard }}/8
+      # PLUGINS is empty when every plug-in is checked.
+      - name: Shard ${{ matrix.shard }} of ${{ needs.scope.outputs.shard_count }}, within the bar, with planted faults
+        env:
+          PLUGINS: ${{ needs.scope.outputs.plugins }}
+        run: python tests/reference/check.py --faults --jobs 4 --shard ${{ matrix.shard }}/${{ needs.scope.outputs.shard_count }} $PLUGINS
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -85,6 +148,8 @@ jobs:
           path: tests/reference/results.json
 
   micropython:
+    needs: scope
+    if: needs.scope.outputs.micropython == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
