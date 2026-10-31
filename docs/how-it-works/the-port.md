@@ -73,10 +73,10 @@ twin, so a desktop built with `AW_TUNED=1` runs the same arithmetic, and
 `tests/reference/check.py` holds it to the same bar as `tuned`.
 
 PurestDrive's runs its sine, drive and blend in Q30 and Q31 fixed point,
-where the S3's integer multiply-high (`mulsh`) beats its FPU. Galactic's keeps upstream's
-float arithmetic but lays its delay lines out for the S3: each line holds
-its left and right side together, and the loop walks each with a pointer
-rather than a counter and an offset into a 470 kB state. The same reverb
+where the S3's integer multiply-high (`mulsh`) beats its FPU. Galactic's
+keeps upstream's float arithmetic but lays its delay lines out for the S3:
+each line holds its left and right side together, and the loop walks each
+with a pointer rather than a counter and an offset into a 470 kB state. The same reverb
 in fixed point measured slower, because Galactic's twenty-four delay taps
 and eight feedback paths run out of integer registers before they run out
 of the FPU's. ButterComp2 has none: its control is 1 / target², which
