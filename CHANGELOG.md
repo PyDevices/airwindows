@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- On the ESP32-S3, Galactic runs a kernel written for it, with its delay
+  lines laid out for the S3, which takes its cost from 25.7 to 22.8 % of a
+  core and meets the same bar.
 - On the ESP32-S3, PurestDrive runs a kernel written for it, in fixed
   point, which takes its cost from 3.5 to 2.9 % of a core. It meets the
   same bar against upstream; `audioairwindows.TUNED` says whether a build

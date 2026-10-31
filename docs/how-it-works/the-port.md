@@ -70,9 +70,18 @@ and the generator puts it beside the translated loop. Xtensa builds run it
 (`audioairwindows.TUNED`); everything else, the P4 included, keeps the
 translated loop. It is plain C apart from single instructions with a C
 twin, so a desktop built with `AW_TUNED=1` runs the same arithmetic, and
-`tests/reference/check.py` holds it to the same bar as `tuned`. PurestDrive
-is the first: its sine, drive and blend in Q30 and Q31 fixed point, where
-the S3's integer multiply-high (`mulsh`) beats its FPU.
+`tests/reference/check.py` holds it to the same bar as `tuned`.
+
+PurestDrive's runs its sine, drive and blend in Q30 and Q31 fixed point,
+where the S3's integer multiply-high (`mulsh`) beats its FPU. Galactic's
+keeps upstream's float arithmetic but lays its delay lines out for the S3:
+each line holds its left and right side together, and the loop walks each
+with a pointer rather than a counter and an offset into a 470 kB state. The same reverb
+in fixed point measured slower, because Galactic's twenty-four delay taps
+and eight feedback paths run out of integer registers before they run out
+of the FPU's. ButterComp2 has none: its control is 1 / target², which
+needs a float's range, and the S3's own divide sequence is no cheaper than
+the Newton steps the translated loop uses.
 
 Single precision isn't close enough for every plug-in. A long recursive
 filter, or a phase that grows for seconds, drifts from upstream by more
@@ -129,16 +138,16 @@ The second column is the effect alone:
 
 | Effect | Pulled from Python | Pulled from C |
 |---|---|---|
-| Galactic | 36.2 % | 25.7 % |
-| PurestDrive (tuned, fixed point) | 10.6 % | 2.9 % |
-| ButterComp2 | 19.8 % | 12.1 % |
-| All three | 49.8 % | 39.1 % |
+| Galactic (tuned) | 33.1 % | 22.8 % |
+| PurestDrive (tuned, fixed point) | 10.5 % | 2.9 % |
+| ButterComp2 | 19.7 % | 12.1 % |
+| All three | 46.6 % | 36.2 % |
 
-Before the one-instruction int16 in and out and fixed-point PurestDrive,
-the same firmware measured 37.3, 12.0, 20.9 and 53.6 % pulled from Python
-(26.8, 4.4, 13.3 and 42.9 % from C). PurestDrive's float loop with the
-same int16 in and out measured 3.5 % from C, so fixed point saves a sixth
-of what is left. The hand-written ports these three replaced measured 41.0, 13.2,
+Before the one-instruction int16 in and out and the tuned kernels, the same
+firmware measured 37.3, 12.0, 20.9 and 53.6 % pulled from Python (26.8,
+4.4, 13.3 and 42.9 % from C). With the int16 change alone, the translated
+loops measured 25.7 % for Galactic and 3.5 % for PurestDrive from C, so the
+tuned kernels save a ninth and a sixth of what was left. The hand-written ports these three replaced measured 41.0, 13.2,
 20.5 and 58.3 % from Python on the same board.
 
 A plug-in's cost on a board depends on whether it runs the fast path;
