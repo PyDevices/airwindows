@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Say which CI jobs a change needs, so a change pays only for what it touches.
 
     python tools/ci_scope.py --base origin/main         # a branch against main

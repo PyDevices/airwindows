@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Measure what each effect costs, as a share of one core.
 
 Plays two seconds of stereo noise at 48 kHz through each effect, and then

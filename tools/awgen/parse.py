@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Reads one upstream plug-in into a description.
 
 An Airwindows plug-in is three files under plugins/LinuxVST/src/<Name>/:

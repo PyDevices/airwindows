@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Print how long a burst of noise rings in Galactic.
 
 Plays a 20 ms burst into the reverb and prints the loudest sample of each

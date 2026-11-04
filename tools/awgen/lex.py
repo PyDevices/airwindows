@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """A tokenizer for the C++ subset Airwindows plug-ins are written in.
 
 Every character of the source lands in exactly one token, comments and

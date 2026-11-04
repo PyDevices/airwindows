@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """python -m tools.awgen [--upstream DIR] [--only Name,Name] [--check]
 
 Reads upstream's plug-ins and writes the generated kernels, the registry and

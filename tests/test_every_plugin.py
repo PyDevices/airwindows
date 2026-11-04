@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Every plug-in builds, takes its knobs, and renders, in both variants.
 
 The accuracy of each one against upstream is tests/check_reference.py's

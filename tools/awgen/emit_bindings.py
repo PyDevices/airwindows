@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Writes what binds the generated kernels to each interpreter:
 
   src/airwindows/registry.h, registry.c  every plug-in a build carries

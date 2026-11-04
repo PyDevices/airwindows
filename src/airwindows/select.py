@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Which plug-ins a MicroPython build carries. micropython.mk and
 micropython.cmake run it with the build's AIRWINDOWS_PLUGINS:
 

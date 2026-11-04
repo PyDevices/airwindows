@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """MicroPython and CPython render the same bytes.
 
 Set MICROPYTHON to a unix MicroPython built with audiodsp and this module
