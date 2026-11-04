@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Render every effect and check a hash of its output, one line per case.
 
 Run it under a MicroPython built with audiodsp and this module, or under

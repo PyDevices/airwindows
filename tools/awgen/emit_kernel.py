@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Writes one plug-in's C kernel: src/airwindows/plugins/<Name>.c.
 
 Each file holds the plug-in's state as a struct, its constructor and its

@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Completes a parsed plug-in's description: Python names for its
 parameters, their defaults, its one-line summary and upstream's
 collections, and whether it fits the template (and if not, why)."""

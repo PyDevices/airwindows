@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """The description of one plug-in, which every emitter reads.
 
 parse.py fills it from upstream's three files; translate.py turns its

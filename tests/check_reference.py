@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """The generated kernels against Airwindows' own code.
 
 Runs tests/reference/check.py, which compiles each plug-in's upstream C++

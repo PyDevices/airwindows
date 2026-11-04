@@ -1,5 +1,6 @@
-# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: Copyright (c) 2026 Brad Barnett
+#
+# SPDX-License-Identifier: MIT
 """Turns a plug-in's constructor and float loop into C.
 
 The loop is upstream's own text with a few tokens swapped, so the generated
