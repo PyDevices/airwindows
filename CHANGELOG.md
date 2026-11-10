@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.1.0.dev0 (2026-11-10)
 
 - On the ESP32-S3, Galactic runs a kernel written for it, with its delay
   lines laid out for the S3, which takes its cost from 25.7 to 22.8 % of a
@@ -51,6 +51,19 @@
 - Pins live in `DEPENDENCIES.lock`. The tests are renamed: the hash check is
   `tests/test_audioairwindows.py` and runs on MicroPython in CI, and the
   check against Airwindows' own code is `tests/check_reference.py`.
+
+- Releases: prebuilt wheels and a tag-driven publish workflow (#10)
+- Roadmap: single-precision bullet in three lines (#9)
+- Style check: fail a pull request on the mechanical style rules (#8)
+- LICENSE: copyright Brad Barnett, as the file headers say (#7)
+- Licence headers on every Python file (#6)
+- S3: Galactic's tuned kernel, its delay lines laid out for the S3 (#5)
+- S3: a kernel written for it where it measures cheaper; PurestDrive's in fixed point (#4)
+- S3: int16 in and out in one instruction each; the bench also pulls from C (#2)
+- CI: run each job only for the changes it covers (#1)
+- LICENSE: copyright PyDevices, as in the other PyDevices repositories
+- Name PyDevices/airwindows and omnipython-airwindows in the README, the docs, the workflow and the package
+- airwindows, imported from bdbarnett/airwindows-py at 3e387c04dede9e3aebd08922a52ae3fbf5066cf2. The repository's tree at that commit, without its history.
 
 ## 0.1.0
 
