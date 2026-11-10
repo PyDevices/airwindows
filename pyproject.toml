@@ -51,6 +51,10 @@ test-environment = { PIP_NO_DEPS = "1" }
 archs = ["auto64"]
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
+# No debug information: it made these wheels six times the size of the others.
+# The flag comes after the interpreter's own -g, so it wins; optimisation is
+# untouched.
+environment = { CFLAGS = "-g0" }
 
 # arm64 only, matching the runner: an x86_64 wheel built there couldn't run
 # its test.
