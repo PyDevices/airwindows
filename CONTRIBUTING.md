@@ -34,6 +34,46 @@ The tests are:
 Everything the builds fetch or test against is pinned in
 [`DEPENDENCIES.lock`](DEPENDENCIES.lock), and CI reads its pins from there.
 
+## Build and release wheels
+
+`omnipython-airwindows` is a native CPython distribution. `python -m build`
+makes a local source archive and wheel.
+
+A GitHub Release `vX.Y.Z`, matching the `VERSION` file (which is also where
+`audioairwindows.__version__` comes from), starts the organization's reusable
+publishing workflow. The pin is the `@publishing-vN` ref in
+`.github/workflows/publish-release-packages.yml`, with
+`build-kind: native-and-wasm`. It builds and validates exactly the number of
+wheels `expected-wheel-count` in that file names, and the settings that choose
+them are in `[tool.cibuildwheel]` in `pyproject.toml`. If the count changes,
+change it in the same pull request. A release builds 30 wheels:
+
+- CPython 3.11 to 3.15, plus the free-threaded 3.15t, on manylinux_2_28
+  x86_64, manylinux_2_28 aarch64, Windows AMD64 and macosx_arm64: 24.
+- CPython 3.13 to 3.14, Android API 21 arm64_v8a and x86_64: 4.
+- CPython 3.13 to 3.14, Pyodide wasm32: 2.
+
+Every wheel compiles all 530 plug-ins, so a release build takes much longer
+than a test run. Each wheel except the 3.15 ones, Android and Pyodide
+installs into a clean environment and runs the simple test.
+
+To release, run the "Prepare release" workflow. It opens a pull request with
+`VERSION` and the changelog; merging it makes the tag and the GitHub Release,
+and the Release starts "Publish release packages". Every release goes to
+TestPyPI and is attached to its GitHub Release. A pre-release
+(`X.Y.ZrcN`, `X.Y.Z.devN`) stops there. A final release then goes to
+production PyPI after a maintainer approves the `pypi` environment; that
+upload is the `pypi` job in `publish-release-packages.yml`, not in the
+reusable workflow, because PyPI's Trusted Publishing only matches the
+workflow that runs the upload.
+
+If a publish run is interrupted, run it again for the same tag:
+
+```sh
+gh workflow run publish-release-packages.yml --repo PyDevices/airwindows \
+    -f release-ref=vX.Y.Z
+```
+
 ## Build the unix MicroPython the tests use
 
 Follow [Install](docs/get-started/install.md#micropython) with the unix

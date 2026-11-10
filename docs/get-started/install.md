@@ -6,12 +6,47 @@ The effects are audiodsp audio nodes, so audiodsp comes first: version
 ## CPython
 
 ```sh
-pip install git+https://github.com/PyDevices/airwindows
+pip install omnipython-airwindows
 ```
 
-That installs [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/)
-too, and builds a C extension with every plug-in in it, so you need a C
-compiler and a few minutes. Python 3.11 or later.
+That installs a prebuilt wheel with every plug-in in it, so nothing
+compiles, and [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/)
+beside it. Python 3.11 or later.
+
+A wheel is published for:
+
+- Linux, x86_64 and aarch64 (64-bit Raspberry Pi OS), glibc 2.28 or later
+- Windows, 64-bit
+- macOS on Apple Silicon
+- Android, arm64 and x86_64, and Pyodide, on Python 3.13 and 3.14
+
+Python 3.15 and its free-threaded build have wheels on Linux, Windows and
+macOS. A pre-release (`.devN`, `rcN`) is published to TestPyPI first, and
+`pip` skips pre-releases unless you ask for one:
+
+```sh
+pip install --pre -i https://test.pypi.org/simple/ \
+    --extra-index-url https://pypi.org/simple/ omnipython-airwindows
+```
+
+With `uv`, add `--index-strategy unsafe-best-match`, or it resolves the
+name on PyPI before TestPyPI and installs the wrong version:
+
+```sh
+uv pip install --prerelease allow --index-strategy unsafe-best-match \
+    -i https://test.pypi.org/simple/ \
+    --extra-index-url https://pypi.org/simple/ omnipython-airwindows
+```
+
+### Build from source
+
+Anywhere else (Alpine Linux, Intel Macs, 32-bit Python), `pip` has no
+wheel for you, so build the extension yourself. It needs a C compiler and a
+few minutes, because it compiles about 530 plug-ins:
+
+```sh
+pip install git+https://github.com/PyDevices/airwindows
+```
 
 ## MicroPython
 
