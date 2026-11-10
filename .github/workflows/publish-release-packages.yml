@@ -1,0 +1,72 @@
+name: Publish release packages
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      release-ref:
+        description: Exact vX.Y.Z tag to retry
+        required: true
+        type: string
+
+# The coordinator needs contents:write to attach release assets; a called
+# workflow may not exceed the caller's grant, so the ceiling is set here.
+# id-token:write is granted only to the pypi job below, the one job that
+# uses it.
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    uses: PyDevices/.github/.github/workflows/reusable-publish-release-packages.yml@publishing-v21
+    with:
+      build-kind: native-and-wasm
+      distribution-name: omnipython-airwindows
+      wheel-filename-prefix: omnipython_airwindows
+      # 30: cp311-cp314, cp315 and cp315t on manylinux x86_64, manylinux
+      # aarch64, win_amd64 and macosx_arm64 (24), cp313 and cp314 on Android
+      # arm64_v8a and x86_64 (4), and cp313 and cp314 on Pyodide (2).
+      expected-wheel-count: 30
+      linux-aarch64: true
+      # Production PyPI for final releases. The coordinator only decides;
+      # the upload is the pypi job below.
+      pypi-publish: true
+      release-ref: ${{ inputs.release-ref }}
+    secrets: inherit
+
+  pypi:
+    # The upload runs in this file because PyPI matches its Trusted Publisher
+    # against the workflow that runs the upload job. The pypi environment
+    # requires a reviewer's approval and allows v* tags only.
+    needs: publish
+    if: >-
+      !cancelled() && needs.publish.outputs.pypi-publish == 'true'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download the validated distributions
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ needs.publish.outputs.dist-artifact }}
+          path: dist
+      - name: Publish to PyPI via Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  report-pypi:
+    needs:
+      - publish
+      - pypi
+    if: >-
+      !cancelled() && needs.publish.outputs.pypi-publish == 'true'
+    uses: PyDevices/.github/.github/workflows/reusable-report-pypi-result.yml@publishing-v21
+    with:
+      distribution-name: omnipython-airwindows
+      version: ${{ needs.publish.outputs.version }}
+      pypi-result: ${{ needs.pypi.result }}
+    secrets: inherit

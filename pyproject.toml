@@ -29,3 +29,45 @@ py-modules = ["audioairwindows"]
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
+
+[tool.cibuildwheel]
+build = "cp311-* cp312-* cp313-* cp314-* cp315-* cp315t-*"
+# 3.15 and its free-threaded build on the desktops only: Android and Pyodide
+# have no 3.15 users yet.
+skip = "*musllinux* *-win32 cp315*-android_* cp315*-pyodide_*"
+# Each wheel installs into a clean environment with audiodsp beside it and
+# renders PurestDrive. pydevices-audiodsp's PyPI releases have no Linux aarch64
+# wheel and no 3.15 wheel, so the test environment takes omnipython-audiodsp,
+# the same code under its current name, from TestPyPI and installs the wheel
+# without resolving its dependencies.
+test-command = "python {project}/examples/audioairwindows_simpletest.py"
+test-skip = "*-pyodide_* *-android_*"
+before-test = "pip install --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ omnipython-audiodsp"
+test-environment = { PIP_NO_DEPS = "1" }
+
+# auto64 is the runner's own 64-bit architecture: x86_64 on an x86_64 runner,
+# aarch64 on an ARM one, so one setting serves both.
+[tool.cibuildwheel.linux]
+archs = ["auto64"]
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+# No debug information: it made these wheels six times the size of the others.
+# The flag comes after the interpreter's own -g, so it wins; optimisation is
+# untouched.
+environment = { CFLAGS = "-g0" }
+
+# arm64 only, matching the runner: an x86_64 wheel built there couldn't run
+# its test.
+[tool.cibuildwheel.macos]
+archs = ["arm64"]
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]
+
+[tool.cibuildwheel.android]
+archs = ["arm64_v8a", "x86_64"]
+environment = { ANDROID_API_LEVEL = "21" }
+
+[[tool.cibuildwheel.overrides]]
+select = "*-android_*"
+build-frontend = "build"

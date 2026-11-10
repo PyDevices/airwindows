@@ -5,11 +5,13 @@ audiodsp's audio graph on CPython and MicroPython-compatible firmware.
 
 ## Install
 
-On CPython, beside [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/) 0.6.10 or later:
+On CPython 3.11 or later:
 
 ```sh
-pip install git+https://github.com/PyDevices/airwindows
+pip install omnipython-airwindows
 ```
+
+That installs a prebuilt wheel, and [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/) 0.6.10 or later beside it. [Install](docs/get-started/install.md) lists the platforms that have a wheel and how to build from source on the rest.
 
 On MicroPython, build this repository into the firmware next to audiodsp
 0.6.10 or later: [Install](docs/get-started/install.md) has the command.
