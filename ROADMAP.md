@@ -8,6 +8,6 @@
 - **The fast path on more boards.** The ESP32-P4 and the original ESP32 have
   no double in their FPUs either. Measure each with the fast path on, and
   turn it on where it helps.
-- **A PyPI release**, so `pip install omnipython-airwindows` works without git, with
-  prebuilt wheels so the install doesn't compile every plug-in. The wheels
-  build in CI; the first release is what's left.
+- **A release on PyPI**, so `pip install omnipython-airwindows` works with no
+  extra index. The prebuilt wheels exist for each release; what's left is the
+  final release that puts them on PyPI.
