@@ -10,7 +10,7 @@ pip install omnipython-airwindows
 ```
 
 That installs a prebuilt wheel with every plug-in in it, so nothing
-compiles, and [pydevices-audiodsp](https://pypi.org/project/pydevices-audiodsp/)
+compiles, and [omnipython-audiodsp](https://pypi.org/project/omnipython-audiodsp/)
 beside it. Python 3.11 or later.
 
 A wheel is published for:

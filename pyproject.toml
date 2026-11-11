@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "NOTICE", "third_party/airwindows/LICENSE"]
 requires-python = ">=3.11"
-dependencies = ["pydevices-audiodsp>=0.6.10"]
+dependencies = ["omnipython-audiodsp>=0.6.10"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
@@ -36,7 +36,7 @@ build = "cp311-* cp312-* cp313-* cp314-* cp315-* cp315t-*"
 # have no 3.15 users yet.
 skip = "*musllinux* *-win32 cp315*-android_* cp315*-pyodide_*"
 # Each wheel installs into a clean environment with audiodsp beside it and
-# renders PurestDrive. pydevices-audiodsp's PyPI releases have no Linux aarch64
+# renders PurestDrive. The old pydevices-audiodsp releases have no Linux aarch64
 # wheel and no 3.15 wheel, so the test environment takes omnipython-audiodsp,
 # the same code under its current name, from TestPyPI and installs the wheel
 # without resolving its dependencies.
