@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.0.dev1 (2026-11-13)
+
+- Depend on omnipython-audiodsp; build against audiodsp v0.6.16.dev2 (#13)
+- Roadmap: the wheels exist; the PyPI release is what's left (#12)
+
 ## v0.1.0.dev0 (2026-11-10)
 
 - On the ESP32-S3, Galactic runs a kernel written for it, with its delay
