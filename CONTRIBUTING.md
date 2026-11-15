@@ -101,8 +101,8 @@ python tests/reference/check.py --faults --jobs 4 Name ...
 
 `policy.json` is where a plug-in's exceptions live, each with its reason:
 members the single-precision variant keeps double (`wide`), plug-ins whose
-single-precision loop is outside the bar (`fast: false`), and plug-ins not
-carried (`skip`).
+single-precision loop is outside the bar (`fast: false`), plug-ins too slow
+for the board default (`board: false`), and plug-ins not carried (`skip`).
 
 ## Changing what an effect renders
 

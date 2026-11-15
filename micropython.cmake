@@ -16,7 +16,8 @@ add_library(usermod_airwindows INTERFACE)
 # collections (Basic, Recommended, Latest), `default` or `all`, as a CMake
 # variable (a board's mpconfigboard.cmake) or in the environment. A board
 # build carries `default` unless told otherwise: Airwindows' Basic and
-# Recommended lists. src/airwindows/select.py reads the list.
+# Recommended lists, less those tools/awgen/policy.json marks `board: false`
+# for taking more than a core. src/airwindows/select.py reads the list.
 if(NOT DEFINED AIRWINDOWS_PLUGINS)
     if(DEFINED ENV{AIRWINDOWS_PLUGINS})
         set(AIRWINDOWS_PLUGINS "$ENV{AIRWINDOWS_PLUGINS}")
