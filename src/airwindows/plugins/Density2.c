@@ -322,22 +322,22 @@ typedef struct {
     uint32_t aw_rand;
     uint32_t fpdL;
     uint32_t fpdR;
-    double last3SampleL;
-    double last2SampleL;
-    double last1SampleL;
-    double ataAL;
-    double ataBL;
-    double ataCL;
-    double lastDiffSampleL;
+    float last3SampleL;
+    float last2SampleL;
+    float last1SampleL;
+    float ataAL;
+    float ataBL;
+    float ataCL;
+    float lastDiffSampleL;
     double iirSampleAL;
     double iirSampleBL;
-    double last3SampleR;
-    double last2SampleR;
-    double last1SampleR;
-    double ataAR;
-    double ataBR;
-    double ataCR;
-    double lastDiffSampleR;
+    float last3SampleR;
+    float last2SampleR;
+    float last1SampleR;
+    float ataAR;
+    float ataBR;
+    float ataCR;
+    float lastDiffSampleR;
     double iirSampleAR;
     double iirSampleBR;
     float A;
@@ -355,22 +355,22 @@ static void aw_Density2_init_fast(void *aw_state, double aw_rate) {
     (void)aw_sample_rate;
     uint32_t fpdL = aw_s->fpdL;
     uint32_t fpdR = aw_s->fpdR;
-    double last3SampleL = aw_s->last3SampleL;
-    double last2SampleL = aw_s->last2SampleL;
-    double last1SampleL = aw_s->last1SampleL;
-    double ataAL = aw_s->ataAL;
-    double ataBL = aw_s->ataBL;
-    double ataCL = aw_s->ataCL;
-    double lastDiffSampleL = aw_s->lastDiffSampleL;
+    float last3SampleL = aw_s->last3SampleL;
+    float last2SampleL = aw_s->last2SampleL;
+    float last1SampleL = aw_s->last1SampleL;
+    float ataAL = aw_s->ataAL;
+    float ataBL = aw_s->ataBL;
+    float ataCL = aw_s->ataCL;
+    float lastDiffSampleL = aw_s->lastDiffSampleL;
     double iirSampleAL = aw_s->iirSampleAL;
     double iirSampleBL = aw_s->iirSampleBL;
-    double last3SampleR = aw_s->last3SampleR;
-    double last2SampleR = aw_s->last2SampleR;
-    double last1SampleR = aw_s->last1SampleR;
-    double ataAR = aw_s->ataAR;
-    double ataBR = aw_s->ataBR;
-    double ataCR = aw_s->ataCR;
-    double lastDiffSampleR = aw_s->lastDiffSampleR;
+    float last3SampleR = aw_s->last3SampleR;
+    float last2SampleR = aw_s->last2SampleR;
+    float last1SampleR = aw_s->last1SampleR;
+    float ataAR = aw_s->ataAR;
+    float ataBR = aw_s->ataBR;
+    float ataCR = aw_s->ataCR;
+    float lastDiffSampleR = aw_s->lastDiffSampleR;
     double iirSampleAR = aw_s->iirSampleAR;
     double iirSampleBR = aw_s->iirSampleBR;
     float A = aw_s->A;
@@ -427,22 +427,22 @@ static void aw_Density2_process_fast(void *aw_state, int16_t *aw_out,
     (void)aw_sample_rate;
     uint32_t fpdL = aw_s->fpdL;
     uint32_t fpdR = aw_s->fpdR;
-    double last3SampleL = aw_s->last3SampleL;
-    double last2SampleL = aw_s->last2SampleL;
-    double last1SampleL = aw_s->last1SampleL;
-    double ataAL = aw_s->ataAL;
-    double ataBL = aw_s->ataBL;
-    double ataCL = aw_s->ataCL;
-    double lastDiffSampleL = aw_s->lastDiffSampleL;
+    float last3SampleL = aw_s->last3SampleL;
+    float last2SampleL = aw_s->last2SampleL;
+    float last1SampleL = aw_s->last1SampleL;
+    float ataAL = aw_s->ataAL;
+    float ataBL = aw_s->ataBL;
+    float ataCL = aw_s->ataCL;
+    float lastDiffSampleL = aw_s->lastDiffSampleL;
     double iirSampleAL = aw_s->iirSampleAL;
     double iirSampleBL = aw_s->iirSampleBL;
-    double last3SampleR = aw_s->last3SampleR;
-    double last2SampleR = aw_s->last2SampleR;
-    double last1SampleR = aw_s->last1SampleR;
-    double ataAR = aw_s->ataAR;
-    double ataBR = aw_s->ataBR;
-    double ataCR = aw_s->ataCR;
-    double lastDiffSampleR = aw_s->lastDiffSampleR;
+    float last3SampleR = aw_s->last3SampleR;
+    float last2SampleR = aw_s->last2SampleR;
+    float last1SampleR = aw_s->last1SampleR;
+    float ataAR = aw_s->ataAR;
+    float ataBR = aw_s->ataBR;
+    float ataCR = aw_s->ataCR;
+    float lastDiffSampleR = aw_s->lastDiffSampleR;
     double iirSampleAR = aw_s->iirSampleAR;
     double iirSampleBR = aw_s->iirSampleBR;
     float A = aw_s->A;
@@ -462,135 +462,143 @@ static void aw_Density2_process_fast(void *aw_state, int16_t *aw_out,
 	double output = C;
 	double wet = D;
 	    
-    while (--sampleFrames >= 0)
+    const float aw_f_density = (float)density;
+	const float aw_f_out = (float)out;
+	const float aw_f_iirAmount = (float)iirAmount;
+	const float aw_f_output = (float)output;
+	const float aw_f_wet = (float)wet;
+	const float aw_inv0 = 1.0f / ( 2.0);
+	const float aw_inv1 = 1.0f / ( 1.187f);
+	const float aw_inv2 = 1.0f / ( 2.0f);
+	while (--sampleFrames >= 0)
     {
 		const float aw_inL = AW_IN_L(aw_in);
 		const float aw_inR = AW_IN_R(aw_in, aw_channels);
 		float aw_outL = 0.0f, aw_outR = 0.0f;/* aw:loop */
-		double inputSampleL = aw_inL;
-		double inputSampleR = aw_inR;
-		if (fabs(inputSampleL)<1.18e-23) inputSampleL = fpdL * 1.18e-17;
-		if (fabs(inputSampleR)<1.18e-23) inputSampleR = fpdR * 1.18e-17;
-		double drySampleL = inputSampleL;
-		double drySampleR = inputSampleR;
+		float inputSampleL = aw_inL;
+		float inputSampleR = aw_inR;
+		if (fabsf(inputSampleL)<1.18e-23f) inputSampleL = fpdL * 1.18e-17f;
+		if (fabsf(inputSampleR)<1.18e-23f) inputSampleR = fpdR * 1.18e-17f;
+		float drySampleL = inputSampleL;
+		float drySampleR = inputSampleR;
 		
-		double halfwaySampleL = (inputSampleL + last1SampleL + ((-last2SampleL + last3SampleL) * 0.0414213562373095048801688)) / 2.0;
-		double halfDrySampleL = halfwaySampleL;
+		double halfwaySampleL = (inputSampleL + last1SampleL + ((-last2SampleL + last3SampleL) * 0.0414213562373095048801688)) * aw_inv0;
+		float halfDrySampleL = halfwaySampleL;
 		
-		double halfwaySampleR = (inputSampleR + last1SampleR + ((-last2SampleR + last3SampleR) * 0.0414213562373095048801688)) / 2.0;
-		double halfDrySampleR = halfwaySampleR;
+		double halfwaySampleR = (inputSampleR + last1SampleR + ((-last2SampleR + last3SampleR) * 0.0414213562373095048801688)) * aw_inv0;
+		float halfDrySampleR = halfwaySampleR;
 		
 		last3SampleL = last2SampleL; last2SampleL = last1SampleL; last1SampleL = inputSampleL;
 		last3SampleR = last2SampleR; last2SampleR = last1SampleR; last1SampleR = inputSampleR;
 		
-		iirSampleBL = (iirSampleBL * (1.0 - iirAmount)) + (halfwaySampleL * iirAmount); halfwaySampleL -= iirSampleBL; //highpass section
-		iirSampleBR = (iirSampleBR * (1.0 - iirAmount)) + (halfwaySampleR * iirAmount); halfwaySampleR -= iirSampleBR; //highpass section
+		iirSampleBL = (iirSampleBL * (1.0 - aw_f_iirAmount)) + (halfwaySampleL * aw_f_iirAmount); halfwaySampleL -= iirSampleBL; //highpass section
+		iirSampleBR = (iirSampleBR * (1.0 - aw_f_iirAmount)) + (halfwaySampleR * aw_f_iirAmount); halfwaySampleR -= iirSampleBR; //highpass section
 		
-		double bridgerectifier;
+		float bridgerectifier;
 
-		double count = density;
-		while (count > 1.0) {
-			bridgerectifier = fabs(halfwaySampleL)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-			bridgerectifier = sin(bridgerectifier);
+		float count = aw_f_density;
+		while (count > 1.0f) {
+			bridgerectifier = fabsf(halfwaySampleL)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+			bridgerectifier = aw_sinf(bridgerectifier);
 			if (halfwaySampleL > 0.0) halfwaySampleL = bridgerectifier;
 			else halfwaySampleL = -bridgerectifier;
-			count = count - 1.0;
+			count = count - 1.0f;
 		}
-		bridgerectifier = fabs(halfwaySampleL)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier); //produce either boosted or starved version
-		if (halfwaySampleL > 0) halfwaySampleL = (halfwaySampleL*(1.0-out))+(bridgerectifier*out);
-		else halfwaySampleL = (halfwaySampleL*(1.0-out))-(bridgerectifier*out); //blend according to density control
+		bridgerectifier = fabsf(halfwaySampleL)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier); //produce either boosted or starved version
+		if (halfwaySampleL > 0) halfwaySampleL = (halfwaySampleL*(1.0-aw_f_out))+(bridgerectifier*aw_f_out);
+		else halfwaySampleL = (halfwaySampleL*(1.0-aw_f_out))-(bridgerectifier*aw_f_out); //blend according to density control
 
-		count = density;
-		while (count > 1.0) {
-			bridgerectifier = fabs(halfwaySampleR)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-			bridgerectifier = sin(bridgerectifier);
+		count = aw_f_density;
+		while (count > 1.0f) {
+			bridgerectifier = fabsf(halfwaySampleR)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+			bridgerectifier = aw_sinf(bridgerectifier);
 			if (halfwaySampleR > 0.0) halfwaySampleR = bridgerectifier;
 			else halfwaySampleR = -bridgerectifier;
-			count = count - 1.0;
+			count = count - 1.0f;
 		}
-		bridgerectifier = fabs(halfwaySampleR)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier); //produce either boosted or starved version
-		if (halfwaySampleR > 0) halfwaySampleR = (halfwaySampleR*(1.0-out))+(bridgerectifier*out);
-		else halfwaySampleR = (halfwaySampleR*(1.0-out))-(bridgerectifier*out); //blend according to density control
+		bridgerectifier = fabsf(halfwaySampleR)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier); //produce either boosted or starved version
+		if (halfwaySampleR > 0) halfwaySampleR = (halfwaySampleR*(1.0-aw_f_out))+(bridgerectifier*aw_f_out);
+		else halfwaySampleR = (halfwaySampleR*(1.0-aw_f_out))-(bridgerectifier*aw_f_out); //blend according to density control
 		
 		ataCL = halfwaySampleL - halfDrySampleL;
-		ataAL *= 0.915965594177219015; ataBL *= 0.915965594177219015;
+		ataAL *= 0.915965594177219015f; ataBL *= 0.915965594177219015f;
 		ataBL += ataCL; ataAL -= ataCL; ataCL = ataBL;
-		double halfDiffSampleL = ataCL * 0.915965594177219015;
+		float halfDiffSampleL = ataCL * 0.915965594177219015f;
 		
 		ataCR = halfwaySampleR - halfDrySampleR;
-		ataAR *= 0.915965594177219015; ataBR *= 0.915965594177219015;
+		ataAR *= 0.915965594177219015f; ataBR *= 0.915965594177219015f;
 		ataBR += ataCR; ataAR -= ataCR; ataCR = ataBR;
-		double halfDiffSampleR = ataCR * 0.915965594177219015;
+		float halfDiffSampleR = ataCR * 0.915965594177219015f;
 		
-		iirSampleAL = (iirSampleAL * (1.0 - iirAmount)) + (inputSampleL * iirAmount); inputSampleL -= iirSampleAL; //highpass section
-		iirSampleAR = (iirSampleAR * (1.0 - iirAmount)) + (inputSampleR * iirAmount); inputSampleR -= iirSampleAR; //highpass section
+		iirSampleAL = (iirSampleAL * (1.0 - aw_f_iirAmount)) + (inputSampleL * aw_f_iirAmount); inputSampleL -= iirSampleAL; //highpass section
+		iirSampleAR = (iirSampleAR * (1.0 - aw_f_iirAmount)) + (inputSampleR * aw_f_iirAmount); inputSampleR -= iirSampleAR; //highpass section
 		
-		count = density;
-		while (count > 1.0) {
-			bridgerectifier = fabs(inputSampleL)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-			bridgerectifier = sin(bridgerectifier);
-			if (inputSampleL > 0.0) inputSampleL = bridgerectifier;
+		count = aw_f_density;
+		while (count > 1.0f) {
+			bridgerectifier = fabsf(inputSampleL)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+			bridgerectifier = aw_sinf(bridgerectifier);
+			if (inputSampleL > 0.0f) inputSampleL = bridgerectifier;
 			else inputSampleL = -bridgerectifier;
-			count = count - 1.0;
+			count = count - 1.0f;
 		}
-		bridgerectifier = fabs(inputSampleL)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier); //produce either boosted or starved version
-		if (inputSampleL > 0) inputSampleL = (inputSampleL*(1-out))+(bridgerectifier*out);
-		else inputSampleL = (inputSampleL*(1-out))-(bridgerectifier*out); //blend according to density control
+		bridgerectifier = fabsf(inputSampleL)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier); //produce either boosted or starved version
+		if (inputSampleL > 0) inputSampleL = (inputSampleL*(1-aw_f_out))+(bridgerectifier*aw_f_out);
+		else inputSampleL = (inputSampleL*(1-aw_f_out))-(bridgerectifier*aw_f_out); //blend according to density control
 		
-		count = density;
-		while (count > 1.0) {
-			bridgerectifier = fabs(inputSampleR)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-			bridgerectifier = sin(bridgerectifier);
-			if (inputSampleR > 0.0) inputSampleR = bridgerectifier;
+		count = aw_f_density;
+		while (count > 1.0f) {
+			bridgerectifier = fabsf(inputSampleR)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+			bridgerectifier = aw_sinf(bridgerectifier);
+			if (inputSampleR > 0.0f) inputSampleR = bridgerectifier;
 			else inputSampleR = -bridgerectifier;
-			count = count - 1.0;
+			count = count - 1.0f;
 		}
-		bridgerectifier = fabs(inputSampleR)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier); //produce either boosted or starved version
-		if (inputSampleR > 0) inputSampleR = (inputSampleR*(1-out))+(bridgerectifier*out);
-		else inputSampleR = (inputSampleR*(1-out))-(bridgerectifier*out); //blend according to density control
+		bridgerectifier = fabsf(inputSampleR)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier); //produce either boosted or starved version
+		if (inputSampleR > 0) inputSampleR = (inputSampleR*(1-aw_f_out))+(bridgerectifier*aw_f_out);
+		else inputSampleR = (inputSampleR*(1-aw_f_out))-(bridgerectifier*aw_f_out); //blend according to density control
 		
 		ataCL = inputSampleL - drySampleL;
-		ataAL *= 0.915965594177219015; ataBL *= 0.915965594177219015;
+		ataAL *= 0.915965594177219015f; ataBL *= 0.915965594177219015f;
 		ataAL += ataCL; ataBL -= ataCL; ataCL = ataAL;
-		double diffSampleL = ataCL * 0.915965594177219015; 
+		float diffSampleL = ataCL * 0.915965594177219015f; 
 		
 		ataCR = inputSampleR - drySampleR;
-		ataAR *= 0.915965594177219015; ataBR *= 0.915965594177219015;
+		ataAR *= 0.915965594177219015f; ataBR *= 0.915965594177219015f;
 		ataAR += ataCR; ataBR -= ataCR; ataCR = ataAR;
-		double diffSampleR = ataCR * 0.915965594177219015; 
+		float diffSampleR = ataCR * 0.915965594177219015f; 
 		
-		inputSampleL = drySampleL + ((diffSampleL + halfDiffSampleL + lastDiffSampleL) / 1.187);
-		lastDiffSampleL = diffSampleL / 2.0;
-		inputSampleL *= output;
-		inputSampleL = (drySampleL*(1.0-wet))+(inputSampleL*wet);
+		inputSampleL = drySampleL + ((diffSampleL + halfDiffSampleL + lastDiffSampleL) * aw_inv1);
+		lastDiffSampleL = diffSampleL * aw_inv2;
+		inputSampleL *= aw_f_output;
+		inputSampleL = (drySampleL*(1.0f-aw_f_wet))+(inputSampleL*aw_f_wet);
 		
-		inputSampleR = drySampleR + ((diffSampleR + halfDiffSampleR + lastDiffSampleR) / 1.187);
-		lastDiffSampleR = diffSampleR / 2.0;
-		inputSampleR *= output;
-		inputSampleR = (drySampleR*(1.0-wet))+(inputSampleR*wet);
+		inputSampleR = drySampleR + ((diffSampleR + halfDiffSampleR + lastDiffSampleR) * aw_inv1);
+		lastDiffSampleR = diffSampleR * aw_inv2;
+		inputSampleR *= aw_f_output;
+		inputSampleR = (drySampleR*(1.0f-aw_f_wet))+(inputSampleR*aw_f_wet);
 		fpdL ^= fpdL << 13; fpdL ^= fpdL >> 17; fpdL ^= fpdL << 5;
 		fpdR ^= fpdR << 13; fpdR ^= fpdR >> 17; fpdR ^= fpdR << 5;
 		//end 32 bit stereo floating point dither
 		
 		aw_outL = inputSampleL;
 		aw_outR = inputSampleR;
-    /* aw:end */		AW_OUT_REF(aw_out, aw_channels, aw_outL, aw_outR);
+    /* aw:end */		AW_OUT_FAST(aw_out, aw_channels, aw_outL, aw_outR);
 		aw_in += aw_channels;
 		aw_out += aw_channels;
 	}

@@ -85,7 +85,10 @@ the Newton steps the translated loop uses.
 
 Single precision isn't close enough for every plug-in. A long recursive
 filter, or a phase that grows for seconds, drifts from upstream by more
-than the accuracy bar allows. Those plug-ins run the reference arithmetic
+than the accuracy bar allows. Some come within it once a few values stay
+double: Density and Density2 keep their slow highpass in double, and
+Density2 the sum ahead of its saturation, which its stages of sine multiply
+up near zero; `policy.json` names these as `wide`. The rest run the reference arithmetic
 in the fast slot too, so they sound the same on a board at a higher cost in
 time. [The list](../reference/plugins.md#full-precision-on-boards) names
 them, with how far their single-precision loop strayed.

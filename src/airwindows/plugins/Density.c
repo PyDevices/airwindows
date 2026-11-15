@@ -305,95 +305,100 @@ static void aw_Density_process_fast(void *aw_state, int16_t *aw_out,
 	double output = C;
 	double wet = D;
 	double dry = 1.0-wet;
-	double bridgerectifier;
-	double out = fabs(density);
+	float bridgerectifier;
+	float out = fabs(density);
 	density = density * fabs(density);
-	double count;
+	float count;
 
-	double inputSampleL;
-	double inputSampleR;
-	double drySampleL;
-	double drySampleR;
+	float inputSampleL;
+	float inputSampleR;
+	float drySampleL;
+	float drySampleR;
 	    
-    while (--sampleFrames >= 0)
+    const float aw_f_density = (float)density;
+	const float aw_f_iirAmount = (float)iirAmount;
+	const float aw_f_output = (float)output;
+	const float aw_f_wet = (float)wet;
+	const float aw_f_dry = (float)dry;
+	while (--sampleFrames >= 0)
     {
 		const float aw_inL = AW_IN_L(aw_in);
 		const float aw_inR = AW_IN_R(aw_in, aw_channels);
 		float aw_outL = 0.0f, aw_outR = 0.0f;/* aw:loop */
 		inputSampleL = aw_inL;
 		inputSampleR = aw_inR;
-		if (fabs(inputSampleL)<1.18e-23) inputSampleL = fpdL * 1.18e-17;
-		if (fabs(inputSampleR)<1.18e-23) inputSampleR = fpdR * 1.18e-17;
+		if (fabsf(inputSampleL)<1.18e-23f) inputSampleL = fpdL * 1.18e-17f;
+		if (fabsf(inputSampleR)<1.18e-23f) inputSampleR = fpdR * 1.18e-17f;
 		drySampleL = inputSampleL;
 		drySampleR = inputSampleR;
 
 		if (fpFlip)
 		{
-			iirSampleAL = (iirSampleAL * (1.0 - iirAmount)) + (inputSampleL * iirAmount);
+			iirSampleAL = (iirSampleAL * (1.0 - aw_f_iirAmount)) + (inputSampleL * aw_f_iirAmount);
 			inputSampleL -= iirSampleAL;
-			iirSampleAR = (iirSampleAR * (1.0 - iirAmount)) + (inputSampleR * iirAmount);
+			iirSampleAR = (iirSampleAR * (1.0 - aw_f_iirAmount)) + (inputSampleR * aw_f_iirAmount);
 			inputSampleR -= iirSampleAR;
 		}
 		else
 		{
-			iirSampleBL = (iirSampleBL * (1.0 - iirAmount)) + (inputSampleL * iirAmount);
+			iirSampleBL = (iirSampleBL * (1.0 - aw_f_iirAmount)) + (inputSampleL * aw_f_iirAmount);
 			inputSampleL -= iirSampleBL;
-			iirSampleBR = (iirSampleBR * (1.0 - iirAmount)) + (inputSampleR * iirAmount);
+			iirSampleBR = (iirSampleBR * (1.0 - aw_f_iirAmount)) + (inputSampleR * aw_f_iirAmount);
 			inputSampleR -= iirSampleBR;
 		}
 		//highpass section
 		fpFlip = !fpFlip;
 		
-		count = density;
-		while (count > 1.0)
+		count = aw_f_density;
+		while (count > 1.0f)
 		{
-			bridgerectifier = fabs(inputSampleL)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
+			bridgerectifier = fabsf(inputSampleL)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
 			//max value for sine function
-			bridgerectifier = sin(bridgerectifier);
-			if (inputSampleL > 0.0) inputSampleL = bridgerectifier;
+			bridgerectifier = aw_sinf(bridgerectifier);
+			if (inputSampleL > 0.0f) inputSampleL = bridgerectifier;
 			else inputSampleL = -bridgerectifier;
 
-			bridgerectifier = fabs(inputSampleR)*1.57079633;
-			if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
+			bridgerectifier = fabsf(inputSampleR)*1.57079633f;
+			if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
 			//max value for sine function
-			bridgerectifier = sin(bridgerectifier);
-			if (inputSampleR > 0.0) inputSampleR = bridgerectifier;
+			bridgerectifier = aw_sinf(bridgerectifier);
+			if (inputSampleR > 0.0f) inputSampleR = bridgerectifier;
 			else inputSampleR = -bridgerectifier;			
 			
-			count = count - 1.0;
+			count = count - 1.0f;
 		}
 		//we have now accounted for any really high density settings.
 
-		while (out > 1.0) out = out - 1.0;
+		while (out > 1.0f) out = out - 1.0f;
 		
-		bridgerectifier = fabs(inputSampleL)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
+		bridgerectifier = fabsf(inputSampleL)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
 		//max value for sine function
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier);
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier);
 		//produce either boosted or starved version
 		if (inputSampleL > 0) inputSampleL = (inputSampleL*(1-out))+(bridgerectifier*out);
 		else inputSampleL = (inputSampleL*(1-out))-(bridgerectifier*out);
 		//blend according to density control
 
-		bridgerectifier = fabs(inputSampleR)*1.57079633;
-		if (bridgerectifier > 1.57079633) bridgerectifier = 1.57079633;
+		bridgerectifier = fabsf(inputSampleR)*1.57079633f;
+		if (bridgerectifier > 1.57079633f) bridgerectifier = 1.57079633f;
 		//max value for sine function
-		if (density > 0) bridgerectifier = sin(bridgerectifier);
-		else bridgerectifier = 1-cos(bridgerectifier);
+		if (aw_f_density > 0) bridgerectifier = aw_sinf(bridgerectifier);
+		else bridgerectifier = 1-aw_cosf(bridgerectifier);
 		//produce either boosted or starved version
-		if (inputSampleR > 0) inputSampleR = (inputSampleR*(1.0-out))+(bridgerectifier*out);
-		else inputSampleR = (inputSampleR*(1.0-out))-(bridgerectifier*out);
+		if (inputSampleR > 0) inputSampleR = (inputSampleR*(1.0f-out))+(bridgerectifier*out);
+		else inputSampleR = (inputSampleR*(1.0f-out))-(bridgerectifier*out);
 		//blend according to density control
 		
-		if (output < 1.0) {
-			inputSampleL *= output;
-			inputSampleR *= output;
+		if (aw_f_output < 1.0f) {
+			inputSampleL *= aw_f_output;
+			inputSampleR *= aw_f_output;
 		}
-		if (wet < 1.0) {
-			inputSampleL = (drySampleL * dry)+(inputSampleL * wet);
-			inputSampleR = (drySampleR * dry)+(inputSampleR * wet);
+		if (aw_f_wet < 1.0f) {
+			inputSampleL = (drySampleL * aw_f_dry)+(inputSampleL * aw_f_wet);
+			inputSampleR = (drySampleR * aw_f_dry)+(inputSampleR * aw_f_wet);
 		}
 		fpdL ^= fpdL << 13; fpdL ^= fpdL >> 17; fpdL ^= fpdL << 5;
 		fpdR ^= fpdR << 13; fpdR ^= fpdR >> 17; fpdR ^= fpdR << 5;
@@ -401,7 +406,7 @@ static void aw_Density_process_fast(void *aw_state, int16_t *aw_out,
 
 		aw_outL = inputSampleL;
 		aw_outR = inputSampleR;
-    /* aw:end */		AW_OUT_REF(aw_out, aw_channels, aw_outL, aw_outR);
+    /* aw:end */		AW_OUT_FAST(aw_out, aw_channels, aw_outL, aw_outR);
 		aw_in += aw_channels;
 		aw_out += aw_channels;
 	}

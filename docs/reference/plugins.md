@@ -188,8 +188,8 @@ audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the sam
 
 | Plug-in | What it is | Parameters | |
 |---|---|---|---|
-| Density | Density is a Swiss Army Knife of saturation/antisaturation. | `density`, `highpass`, `out_level`, `dry_wet` | [ref](#full-precision-on-boards) |
-| Density2 | Density2 is a different color for Density, some old code I had that people wanted. | `density`, `highpass`, `output`, `dry_wet` | [ref](#full-precision-on-boards) |
+| Density | Density is a Swiss Army Knife of saturation/antisaturation. | `density`, `highpass`, `out_level`, `dry_wet` |  |
+| Density2 | Density2 is a different color for Density, some old code I had that people wanted. | `density`, `highpass`, `output`, `dry_wet` |  |
 | Density3 | refines Density to keep up with recent developments. | `density`, `highpas`, `output`, `dry_wet` |  |
 | Dirt | Dirt is a soft-clip distortion in the spirit of Edge. | `gain`, `lowpass`, `highpass`, `output`, `dry_wet` |  |
 | Distortion | Distortion is a slightly dark analog-style distortion with several presets, like Focus. | `input`, `mode`, `output`, `dry_wet` |  |
@@ -651,7 +651,7 @@ audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the sam
 
 ## Full precision on boards
 
-On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a single-precision copy of its loop, held to the same bar against upstream as the full-precision one. These 255, marked **ref** above, drift outside that bar in single precision, so a board runs upstream's arithmetic for them instead: the same sound, at a higher cost in time. The figure is how far the single-precision loop strayed, in int16 steps.
+On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a single-precision copy of its loop, held to the same bar against upstream as the full-precision one. These 253, marked **ref** above, drift outside that bar in single precision, so a board runs upstream's arithmetic for them instead: the same sound, at a higher cost in time. The figure is how far the single-precision loop strayed, in int16 steps.
 
 | Plug-in | Single-precision error |
 |---|---|
@@ -728,8 +728,6 @@ On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a sin
 | DeRez4 | 55906 |
 | DeRez5 | 45914 |
 | Deckwrecka | 7 |
-| Density | 6 |
-| Density2 | 8 |
 | Desk4 | 109 |
 | Discontinuity | 3 |
 | Disintegrate | 3277 |
