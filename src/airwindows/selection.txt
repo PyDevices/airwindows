@@ -493,13 +493,13 @@ YNotNotch
 YNotch Recommended Latest default
 ZAcidLowpass Latest
 ZBandpass
-ZBandpass2 Basic Recommended Latest default
+ZBandpass2 Basic Recommended Latest
 ZHighpass
-ZHighpass2 Basic Recommended Latest default
+ZHighpass2 Basic Recommended Latest
 ZLowpass
-ZLowpass2 Basic Recommended Latest default
+ZLowpass2 Basic Recommended Latest
 ZNotch
-ZNotch2 Basic Recommended Latest default
+ZNotch2 Basic Recommended Latest
 ZOutputStage Latest
 ZRegion
 ZRegion2 Basic Recommended Latest default

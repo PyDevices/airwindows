@@ -2,7 +2,7 @@
 
 # The plug-ins
 
-audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the same name. A desktop install has every one; a board build has the 140 marked **board** unless you choose others ([Install](../get-started/install.md#choose-the-plug-ins)). They are grouped here by upstream's categories, and every parameter is the plug-in's own 0 to 1 knob, as its keyword argument.
+audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the same name. A desktop install has every one; a board build has the 136 marked **board** unless you choose others ([Install](../get-started/install.md#choose-the-plug-ins)). They are grouped here by upstream's categories, and every parameter is the plug-in's own 0 to 1 knob, as its keyword argument.
 
 [Not carried](#not-carried) lists the 1 left out, and why. [Accuracy](accuracy.md) has each one's measured error against upstream.
 
@@ -611,13 +611,13 @@ audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the sam
 | YNotch | YNotch is soft and smooth to nasty, edgy texture-varying filtering. | `gain`, `freq`, `reson8`, `res_edge`, `output`, `dry_wet` | **board** [ref](#full-precision-on-boards) |
 | ZAcidLowpass | ZAcidLowpass is like if an e6400 went insane and grew shark teeth. | `cutoff`, `over`, `under`, `meltdwn`, `drive`, `output` | [ref](#full-precision-on-boards) |
 | ZBandpass | ZBandpass is a bandpass made to sound and act like the Emu e6400 Ultra bandpass. | `input`, `freq`, `output`, `poles` |  |
-| ZBandpass2 | acts more like the Emu e6400 Ultra bandpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZBandpass2 | acts more like the Emu e6400 Ultra bandpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | [not on boards](#left-off-boards) |
 | ZHighpass | ZHighpass is a highpass made to sound and act like the Emu e6400 Ultra highpass. | `input`, `freq`, `output`, `poles` |  |
-| ZHighpass2 | acts more like the Emu e6400 Ultra highpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZHighpass2 | acts more like the Emu e6400 Ultra highpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | [not on boards](#left-off-boards) |
 | ZLowpass | ZLowpass is a lowpass made to sound and act like the Emu e6400 Ultra lowpass. | `input`, `freq`, `output`, `poles` |  |
-| ZLowpass2 | acts more like the Emu e6400 Ultra lowpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZLowpass2 | acts more like the Emu e6400 Ultra lowpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | [not on boards](#left-off-boards) |
 | ZNotch | ZNotch is a notch filter made to sound and act like the Emu e6400 Phaser. | `input`, `freq`, `output`, `poles` |  |
-| ZNotch2 | acts more like the Emu e6400 Ultra phaser in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZNotch2 | acts more like the Emu e6400 Ultra phaser in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | [not on boards](#left-off-boards) |
 | ZRegion | ZRegion is an Emu e6400 style Airwindows Region filter. | `input`, `first`, `last`, `poles`, `dry_wet` | [ref](#full-precision-on-boards) |
 | ZRegion2 | ZRegion2 is an Emu e6400 style Airwindows Region filter, with control smoothing. | `input`, `first`, `last`, `poles`, `dry_wet` | **board** [ref](#full-precision-on-boards) |
 
@@ -900,6 +900,17 @@ On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a sin
 | kRockstar2 | 22 |
 | kStation | 35 |
 | kWoodRoom | 133 |
+
+## Left off boards
+
+Upstream's Basic and Recommended collections list these 4, but a board build leaves them out unless you name them in `AIRWINDOWS_PLUGINS`: on an ESP32-S3 at 240 MHz, each takes more than a whole core to render 48 kHz stereo at its default knobs. A desktop install has them either way. The figure is the share of one core.
+
+| Plug-in | ESP32-S3 core |
+|---|---|
+| ZBandpass2 | 142 % |
+| ZHighpass2 | 174 % |
+| ZLowpass2 | 173 % |
+| ZNotch2 | 174 % |
 
 ## Not carried
 

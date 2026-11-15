@@ -88,12 +88,14 @@ include("/path/to/modules/airwindows/manifest.py")
 ### Choose the plug-ins
 
 A Make build carries every plug-in. A CMake build, which is what an ESP32
-or RP2 firmware is, carries the 140 marked **board** in
+or RP2 firmware is, carries the 136 marked **board** in
 [the list](../reference/plugins.md): upstream's Basic and Recommended
-collections, plus Galactic, PurestDrive and ButterComp2. To carry others,
-set `AIRWINDOWS_PLUGINS` to names, collections (`Basic`, `Recommended`,
-`Latest`), `default` or `all`, separated by spaces or commas, either in the
-environment or on the command line:
+collections, plus Galactic, PurestDrive and ButterComp2, less four
+[too slow for a board](../reference/plugins.md#left-off-boards), which you
+can still name. To carry others, set `AIRWINDOWS_PLUGINS` to names,
+collections (`Basic`, `Recommended`, `Latest`), `default` or `all`,
+separated by spaces or commas, either in the environment or on the command
+line:
 
 ```sh
 make -C micropython/ports/unix USER_C_MODULES=/path/to/modules \
