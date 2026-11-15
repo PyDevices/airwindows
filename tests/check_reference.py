@@ -26,10 +26,12 @@ UPSTREAM = pathlib.Path(os.environ.get(
     "AIRWINDOWS_UPSTREAM", ROOT / ".cache" / "airwindows-upstream"))
 
 # The three this module first shipped by hand, and a few that exercise the
-# generator: rand() at run time, #ifdef'd matrices, statics, wide sums, and a
-# wide local ahead of a saturation stage (Density2).
+# generator: rand() at run time, #ifdef'd matrices, statics, wide sums, a
+# wide local ahead of a saturation stage (Density2), and wide arrays of
+# biquad state (ZHighpass2).
 SAMPLE = ("Galactic", "PurestDrive", "ButterComp2", "Pressure4", "kCosmos",
-          "VerbSixes", "TapeHack", "Air3", "Cojones", "ToTape9", "Density2")
+          "VerbSixes", "TapeHack", "Air3", "Cojones", "ToTape9", "Density2",
+          "ZHighpass2")
 
 
 @unittest.skipUnless((UPSTREAM / "plugins").is_dir() and

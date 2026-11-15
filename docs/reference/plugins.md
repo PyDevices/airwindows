@@ -610,14 +610,14 @@ audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the sam
 | YNotNotch | YNotNotch is soft and smooth to nasty, edgy texture-varying filtering, no control smoothing. | `gain`, `freq`, `reson8`, `res_edge`, `output`, `dry_wet` | [ref](#full-precision-on-boards) |
 | YNotch | YNotch is soft and smooth to nasty, edgy texture-varying filtering. | `gain`, `freq`, `reson8`, `res_edge`, `output`, `dry_wet` | **board** [ref](#full-precision-on-boards) |
 | ZAcidLowpass | ZAcidLowpass is like if an e6400 went insane and grew shark teeth. | `cutoff`, `over`, `under`, `meltdwn`, `drive`, `output` | [ref](#full-precision-on-boards) |
-| ZBandpass | ZBandpass is a bandpass made to sound and act like the Emu e6400 Ultra bandpass. | `input`, `freq`, `output`, `poles` | [ref](#full-precision-on-boards) |
-| ZBandpass2 | acts more like the Emu e6400 Ultra bandpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** [ref](#full-precision-on-boards) |
-| ZHighpass | ZHighpass is a highpass made to sound and act like the Emu e6400 Ultra highpass. | `input`, `freq`, `output`, `poles` | [ref](#full-precision-on-boards) |
-| ZHighpass2 | acts more like the Emu e6400 Ultra highpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** [ref](#full-precision-on-boards) |
-| ZLowpass | ZLowpass is a lowpass made to sound and act like the Emu e6400 Ultra lowpass. | `input`, `freq`, `output`, `poles` | [ref](#full-precision-on-boards) |
-| ZLowpass2 | acts more like the Emu e6400 Ultra lowpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** [ref](#full-precision-on-boards) |
-| ZNotch | ZNotch is a notch filter made to sound and act like the Emu e6400 Phaser. | `input`, `freq`, `output`, `poles` | [ref](#full-precision-on-boards) |
-| ZNotch2 | acts more like the Emu e6400 Ultra phaser in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** [ref](#full-precision-on-boards) |
+| ZBandpass | ZBandpass is a bandpass made to sound and act like the Emu e6400 Ultra bandpass. | `input`, `freq`, `output`, `poles` |  |
+| ZBandpass2 | acts more like the Emu e6400 Ultra bandpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZHighpass | ZHighpass is a highpass made to sound and act like the Emu e6400 Ultra highpass. | `input`, `freq`, `output`, `poles` |  |
+| ZHighpass2 | acts more like the Emu e6400 Ultra highpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZLowpass | ZLowpass is a lowpass made to sound and act like the Emu e6400 Ultra lowpass. | `input`, `freq`, `output`, `poles` |  |
+| ZLowpass2 | acts more like the Emu e6400 Ultra lowpass in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
+| ZNotch | ZNotch is a notch filter made to sound and act like the Emu e6400 Phaser. | `input`, `freq`, `output`, `poles` |  |
+| ZNotch2 | acts more like the Emu e6400 Ultra phaser in motion, with control smoothing. | `input`, `freq`, `output`, `poles` | **board** |
 | ZRegion | ZRegion is an Emu e6400 style Airwindows Region filter. | `input`, `first`, `last`, `poles`, `dry_wet` | [ref](#full-precision-on-boards) |
 | ZRegion2 | ZRegion2 is an Emu e6400 style Airwindows Region filter, with control smoothing. | `input`, `first`, `last`, `poles`, `dry_wet` | **board** [ref](#full-precision-on-boards) |
 
@@ -651,7 +651,7 @@ audioairwindows carries 528 of Airwindows' 529 plug-ins, each a class of the sam
 
 ## Full precision on boards
 
-On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a single-precision copy of its loop, held to the same bar against upstream as the full-precision one. These 253, marked **ref** above, drift outside that bar in single precision, so a board runs upstream's arithmetic for them instead: the same sound, at a higher cost in time. The figure is how far the single-precision loop strayed, in int16 steps.
+On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a single-precision copy of its loop, held to the same bar against upstream as the full-precision one. These 245, marked **ref** above, drift outside that bar in single precision, so a board runs upstream's arithmetic for them instead: the same sound, at a higher cost in time. The figure is how far the single-precision loop strayed, in int16 steps.
 
 | Plug-in | Single-precision error |
 |---|---|
@@ -878,14 +878,6 @@ On a part whose FPU has no double, such as the ESP32-S3, each plug-in runs a sin
 | YNotNotch | 16820 |
 | YNotch | 16820 |
 | ZAcidLowpass | 35822 |
-| ZBandpass | 6 |
-| ZBandpass2 | 4 |
-| ZHighpass | 6 |
-| ZHighpass2 | 1933 |
-| ZLowpass | 3 |
-| ZLowpass2 | 17 |
-| ZNotch | 9 |
-| ZNotch2 | 204 |
 | ZOutputStage | 147 |
 | ZRegion | 42632 |
 | ZRegion2 | 16042 |

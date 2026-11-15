@@ -64,7 +64,8 @@ class SinglePrecision(unittest.TestCase):
     one. check_reference.py holds them to upstream; this checks they still
     run their own loop, and stay near the full one."""
 
-    NAMES = ("Density", "Density2")
+    NAMES = ("Density", "Density2", "ZLowpass", "ZLowpass2", "ZHighpass",
+             "ZHighpass2", "ZBandpass", "ZBandpass2", "ZNotch", "ZNotch2")
 
     def test_fast_is_its_own_loop_and_stays_close(self):
         pcm = burst(4096, 2)

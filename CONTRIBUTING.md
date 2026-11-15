@@ -28,7 +28,7 @@ The tests are:
 - `check_reference.py`: the generated kernels against Airwindows' own code,
   through `tests/reference/check.py`. It compiles each upstream plug-in from
   a checkout at `.cache/airwindows-upstream`, so it needs that and a C++
-  compiler; without them it skips. It checks eleven plug-ins by default;
+  compiler; without them it skips. It checks twelve plug-ins by default;
   `AW_REFERENCE_PLUGINS=all` checks every one, which takes hours.
 
 Everything the builds fetch or test against is pinned in
