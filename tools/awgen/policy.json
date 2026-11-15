@@ -1,5 +1,5 @@
 {
- "_doc": "Per plug-in choices the generator can't make from the source alone. wide: members the fast variant keeps in double, with every statement that touches them, because a long sum in single precision drifts from upstream. phase: wide members that only grow by a step and wrap to zero, which the fast variant keeps in Q4.60 fixed point, so adding the step costs no double arithmetic. fast: false runs upstream's arithmetic in the fast slot too, for a plug-in whose single-precision loop measured outside the bar (fast_error: its worst case, in int16 steps). skip: why a plug-in isn't carried at all. tuned: true adds a fast variant written by hand in tuned/<Name>.c, which the targets plugin.h names in AW_TUNED (Xtensa) run in place of the translated one, because it measured cheaper there.",
+ "_doc": "Per plug-in choices the generator can't make from the source alone. wide: members, or locals, the fast variant keeps in double, with every statement that writes or compares them, because a long sum in single precision drifts from upstream, or a value a saturation stage then multiplies up loses too much in rounding. phase: wide members that only grow by a step and wrap to zero, which the fast variant keeps in Q4.60 fixed point, so adding the step costs no double arithmetic. fast: false runs upstream's arithmetic in the fast slot too, for a plug-in whose single-precision loop measured outside the bar (fast_error: its worst case, in int16 steps). skip: why a plug-in isn't carried at all. tuned: true adds a fast variant written by hand in tuned/<Name>.c, which the targets plugin.h names in AW_TUNED (Xtensa) run in place of the translated one, because it measured cheaper there.",
  "Galactic": {
   "wide": [
    "vibM",
@@ -307,12 +307,22 @@
   "fast_error": 7
  },
  "Density": {
-  "fast": false,
-  "fast_error": 6
+  "wide": [
+   "iirSampleAL",
+   "iirSampleBL",
+   "iirSampleAR",
+   "iirSampleBR"
+  ]
  },
  "Density2": {
-  "fast": false,
-  "fast_error": 8
+  "wide": [
+   "iirSampleAL",
+   "iirSampleBL",
+   "iirSampleAR",
+   "iirSampleBR",
+   "halfwaySampleL",
+   "halfwaySampleR"
+  ]
  },
  "Desk4": {
   "fast": false,

@@ -58,5 +58,34 @@ class EveryPlugin(unittest.TestCase):
             node.set(no_such_knob=1)
 
 
+class SinglePrecision(unittest.TestCase):
+    """Plug-ins whose fast variant, the one a board with no double FPU runs,
+    is a single-precision loop of their own rather than the full-precision
+    one. check_reference.py holds them to upstream; this checks they still
+    run their own loop, and stay near the full one."""
+
+    NAMES = ("Density", "Density2")
+
+    def test_fast_is_its_own_loop_and_stays_close(self):
+        pcm = burst(4096, 2)
+        for name in self.NAMES:
+            count = len(getattr(audioairwindows, name)._PARAMS)
+            for rate in (48000, 192000):
+                for value in (0.25, 0.75, 1.0):
+                    with self.subTest(name=name, rate=rate, value=value):
+                        out = {}
+                        for fast in (False, True):
+                            state = _audioairwindows.State(
+                                name, sample_rate=rate, channel_count=2,
+                                fast=fast)
+                            for index in range(count):
+                                state.configure(index, value)
+                            out[fast] = array("h", state.process(pcm))
+                        steps = [abs(a - b)
+                                 for a, b in zip(out[False], out[True])]
+                        self.assertGreater(max(steps), 0)
+                        self.assertLessEqual(max(steps), 3)
+
+
 if __name__ == "__main__":
     unittest.main()

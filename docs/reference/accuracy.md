@@ -169,8 +169,8 @@ Two faults are planted in each plug-in with parameters, to show the comparison w
 | DeRez4 | 0 | = full | gain, wrong param |  |
 | DeRez5 | 0 | = full | gain, wrong param |  |
 | Deckwrecka | 1 | = full | gain, wrong param |  |
-| Density | 1 | = full | gain, wrong param |  |
-| Density2 | 1 | = full | gain, wrong param |  |
+| Density | 1 | 2 | gain, wrong param |  |
+| Density2 | 1 | 2 | gain, wrong param |  |
 | Density3 | 0 | 1 | gain, wrong param |  |
 | Desk | 1 | 2 | no parameters |  |
 | Desk4 | 1 | = full | gain, wrong param |  |
