@@ -9,5 +9,4 @@
   no double in their FPUs either. Measure each with the fast path on, and
   turn it on where it helps.
 - **A release on PyPI**, so `pip install omnipython-airwindows` works with no
-  extra index. The prebuilt wheels exist for each release; what's left is the
-  final release that puts them on PyPI.
+  extra index.
