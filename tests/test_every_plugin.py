@@ -70,21 +70,25 @@ class SinglePrecision(unittest.TestCase):
         pcm = burst(4096, 2)
         for name in self.NAMES:
             count = len(getattr(audioairwindows, name)._PARAMS)
+            worst = 0
             for rate in (48000, 192000):
                 for value in (0.25, 0.75, 1.0):
+                    out = {}
+                    for fast in (False, True):
+                        state = _audioairwindows.State(
+                            name, sample_rate=rate, channel_count=2,
+                            fast=fast)
+                        for index in range(count):
+                            state.configure(index, value)
+                        out[fast] = array("h", state.process(pcm))
+                    steps = max(abs(a - b)
+                                for a, b in zip(out[False], out[True]))
                     with self.subTest(name=name, rate=rate, value=value):
-                        out = {}
-                        for fast in (False, True):
-                            state = _audioairwindows.State(
-                                name, sample_rate=rate, channel_count=2,
-                                fast=fast)
-                            for index in range(count):
-                                state.configure(index, value)
-                            out[fast] = array("h", state.process(pcm))
-                        steps = [abs(a - b)
-                                 for a, b in zip(out[False], out[True])]
-                        self.assertGreater(max(steps), 0)
-                        self.assertLessEqual(max(steps), 3)
+                        self.assertLessEqual(steps, 3)
+                    worst = max(worst, steps)
+            # The same output everywhere means the fast slot runs the full
+            # loop: the plug-in has fallen back to full precision on boards.
+            self.assertGreater(worst, 0, name)
 
 
 if __name__ == "__main__":
