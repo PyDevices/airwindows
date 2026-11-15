@@ -97,7 +97,7 @@ jobs:
         run: python -m flake8 --select=E9,F63,F7,F82,F401,F841 src tests tools examples
       - name: Test
         run: python -m unittest discover -s tests -v
-      - name: Eleven generated kernels against upstream's own code, with planted faults
+      - name: Twelve generated kernels against upstream's own code, with planted faults
         if: matrix.python == '3.12'
         run: python -m unittest discover -s tests -p 'check_*.py' -v
       - name: The simpletest runs

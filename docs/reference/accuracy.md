@@ -501,14 +501,14 @@ Two faults are planted in each plug-in with parameters, to show the comparison w
 | YNotNotch | 1 | = full | gain, wrong param |  |
 | YNotch | 1 | = full | gain, wrong param |  |
 | ZAcidLowpass | 1 | = full | gain, wrong param |  |
-| ZBandpass | 1 | = full | gain, wrong param |  |
-| ZBandpass2 | 1 | = full | gain, wrong param |  |
-| ZHighpass | 1 | = full | gain, wrong param |  |
-| ZHighpass2 | 1 | = full | gain, wrong param |  |
-| ZLowpass | 1 | = full | gain, wrong param |  |
-| ZLowpass2 | 1 | = full | gain, wrong param |  |
-| ZNotch | 1 | = full | gain, wrong param |  |
-| ZNotch2 | 1 | = full | gain, wrong param |  |
+| ZBandpass | 1 | 1 | gain, wrong param |  |
+| ZBandpass2 | 1 | 1 | gain, wrong param |  |
+| ZHighpass | 1 | 1 | gain, wrong param |  |
+| ZHighpass2 | 1 | 2 | gain, wrong param |  |
+| ZLowpass | 1 | 1 | gain, wrong param |  |
+| ZLowpass2 | 1 | 1 | gain, wrong param |  |
+| ZNotch | 1 | 2 | gain, wrong param |  |
+| ZNotch2 | 1 | 2 | gain, wrong param |  |
 | ZOutputStage | 1 | = full | gain, wrong param |  |
 | ZRegion | 1 | = full | gain, wrong param |  |
 | ZRegion2 | 1 | = full | gain, wrong param |  |

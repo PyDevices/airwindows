@@ -299,8 +299,8 @@ typedef struct {
     double biquadD[15];
     double biquadE[15];
     double biquadF[15];
-    double iirSampleAL;
-    double iirSampleAR;
+    float iirSampleAL;
+    float iirSampleAR;
     uint32_t fpdL;
     uint32_t fpdR;
     float A;
@@ -322,8 +322,8 @@ static void aw_ZLowpass_init_fast(void *aw_state, double aw_rate) {
     double *biquadD = aw_s->biquadD;
     double *biquadE = aw_s->biquadE;
     double *biquadF = aw_s->biquadF;
-    double iirSampleAL = aw_s->iirSampleAL;
-    double iirSampleAR = aw_s->iirSampleAR;
+    float iirSampleAL = aw_s->iirSampleAL;
+    float iirSampleAR = aw_s->iirSampleAR;
     uint32_t fpdL = aw_s->fpdL;
     uint32_t fpdR = aw_s->fpdR;
     float A = aw_s->A;
@@ -367,8 +367,8 @@ static void aw_ZLowpass_process_fast(void *aw_state, int16_t *aw_out,
     double *biquadD = aw_s->biquadD;
     double *biquadE = aw_s->biquadE;
     double *biquadF = aw_s->biquadF;
-    double iirSampleAL = aw_s->iirSampleAL;
-    double iirSampleAR = aw_s->iirSampleAR;
+    float iirSampleAL = aw_s->iirSampleAL;
+    float iirSampleAR = aw_s->iirSampleAR;
     uint32_t fpdL = aw_s->fpdL;
     uint32_t fpdR = aw_s->fpdR;
     float A = aw_s->A;
@@ -428,98 +428,108 @@ static void aw_ZLowpass_process_fast(void *aw_state, int16_t *aw_out,
 	//which lets you fall through to simpler processing at lower settings.
 	double outSample = 0.0;
     
-    while (--sampleFrames >= 0)
+    const float aw_f_clipFactor = (float)clipFactor;
+	const float aw_f_inTrim = (float)inTrim;
+	const float aw_f_outPad = (float)outPad;
+	const float aw_f_iirAmountA = (float)iirAmountA;
+	const float aw_f_trim = (float)trim;
+	const float aw_f_aWet = (float)aWet;
+	const float aw_f_bWet = (float)bWet;
+	const float aw_f_cWet = (float)cWet;
+	const float aw_f_dWet = (float)dWet;
+	const float aw_inv0 = 1.0f / ( aw_f_clipFactor);
+	while (--sampleFrames >= 0)
     {
 		const float aw_inL = AW_IN_L(aw_in);
 		const float aw_inR = AW_IN_R(aw_in, aw_channels);
 		float aw_outL = 0.0f, aw_outR = 0.0f;/* aw:loop */
-		double inputSampleL = aw_inL;
-		double inputSampleR = aw_inR;
-		if (fabs(inputSampleL)<1.18e-23) inputSampleL = fpdL * 1.18e-17;
-		if (fabs(inputSampleR)<1.18e-23) inputSampleR = fpdR * 1.18e-17;
-		double drySampleL = inputSampleL;
-		double drySampleR = inputSampleR;
-		double overallDrySampleL = drySampleL;
-		double overallDrySampleR = drySampleR;
+		float inputSampleL = aw_inL;
+		float inputSampleR = aw_inR;
+		if (fabsf(inputSampleL)<1.18e-23f) inputSampleL = fpdL * 1.18e-17f;
+		if (fabsf(inputSampleR)<1.18e-23f) inputSampleR = fpdR * 1.18e-17f;
+		float drySampleL = inputSampleL;
+		float drySampleR = inputSampleR;
+		float overallDrySampleL = drySampleL;
+		float overallDrySampleR = drySampleR;
 		
-		if (inTrim != 1.0) {inputSampleL *= inTrim; inputSampleR *= inTrim;}
-		if (inputSampleL > 1.0) inputSampleL = 1.0; if (inputSampleL < -1.0) inputSampleL = -1.0;
-		if (inputSampleR > 1.0) inputSampleR = 1.0; if (inputSampleR < -1.0) inputSampleR = -1.0;
-		inputSampleL *= trim; inputSampleR *= trim;
+		if (aw_f_inTrim != 1.0f) {inputSampleL *= aw_f_inTrim; inputSampleR *= aw_f_inTrim;}
+		if (inputSampleL > 1.0f) inputSampleL = 1.0f; if (inputSampleL < -1.0f) inputSampleL = -1.0f;
+		if (inputSampleR > 1.0f) inputSampleR = 1.0f; if (inputSampleR < -1.0f) inputSampleR = -1.0f;
+		inputSampleL *= aw_f_trim; inputSampleR *= aw_f_trim;
 		
-		inputSampleL /= clipFactor;
+		inputSampleL *= aw_inv0;
 		outSample = biquadA[2]*inputSampleL+biquadA[3]*biquadA[7]+biquadA[4]*biquadA[8]-biquadA[5]*biquadA[9]-biquadA[6]*biquadA[10];
 		biquadA[8] = biquadA[7]; biquadA[7] = inputSampleL; biquadA[10] = biquadA[9];
 		if (outSample > 1.0) outSample = 1.0;
 		if (outSample < -1.0) outSample = -1.0;
 		drySampleL = inputSampleL = biquadA[9] = outSample; //DF1
 		
-		inputSampleR /= clipFactor;
+		inputSampleR *= aw_inv0;
 		outSample = biquadA[2]*inputSampleR+biquadA[3]*biquadA[11]+biquadA[4]*biquadA[12]-biquadA[5]*biquadA[13]-biquadA[6]*biquadA[14];
 		biquadA[12] = biquadA[11]; biquadA[11] = inputSampleR; biquadA[14] = biquadA[13];
 		if (outSample > 1.0) outSample = 1.0;
 		if (outSample < -1.0) outSample = -1.0;
 		drySampleR = inputSampleR = biquadA[13] = outSample; //DF1
 		
-		if (bWet > 0.0) {
-			inputSampleL /= clipFactor;
+		if (aw_f_bWet > 0.0f) {
+			inputSampleL *= aw_inv0;
 			outSample = biquadB[2]*inputSampleL+biquadB[3]*biquadB[7]+biquadB[4]*biquadB[8]-biquadB[5]*biquadB[9]-biquadB[6]*biquadB[10];
 			biquadB[8] = biquadB[7]; biquadB[7] = inputSampleL; biquadB[10] = biquadB[9];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadB[9] = outSample; //DF1
-			drySampleL = inputSampleL = (outSample * bWet) + (drySampleL * (1.0-bWet));
+			drySampleL = inputSampleL = (outSample * aw_f_bWet) + (drySampleL * (1.0f-aw_f_bWet));
 			
-			inputSampleR /= clipFactor;
+			inputSampleR *= aw_inv0;
 			outSample = biquadB[2]*inputSampleR+biquadB[3]*biquadB[11]+biquadB[4]*biquadB[12]-biquadB[5]*biquadB[13]-biquadB[6]*biquadB[14];
 			biquadB[12] = biquadB[11]; biquadB[11] = inputSampleR; biquadB[14] = biquadB[13];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadB[13] = outSample; //DF1
-			drySampleR = inputSampleR = (outSample * bWet) + (drySampleR * (1.0-bWet));
+			drySampleR = inputSampleR = (outSample * aw_f_bWet) + (drySampleR * (1.0f-aw_f_bWet));
 		}
-		if (cWet > 0.0) {
-			inputSampleL /= clipFactor;
+		if (aw_f_cWet > 0.0f) {
+			inputSampleL *= aw_inv0;
 			outSample = biquadC[2]*inputSampleL+biquadC[3]*biquadC[7]+biquadC[4]*biquadC[8]-biquadC[5]*biquadC[9]-biquadC[6]*biquadC[10];
 			biquadC[8] = biquadC[7]; biquadC[7] = inputSampleL; biquadC[10] = biquadC[9];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadC[9] = outSample; //DF1
-			drySampleL = inputSampleL = (outSample * cWet) + (drySampleL * (1.0-cWet));
+			drySampleL = inputSampleL = (outSample * aw_f_cWet) + (drySampleL * (1.0f-aw_f_cWet));
 			
-			inputSampleR /= clipFactor;
+			inputSampleR *= aw_inv0;
 			outSample = biquadC[2]*inputSampleR+biquadC[3]*biquadC[11]+biquadC[4]*biquadC[12]-biquadC[5]*biquadC[13]-biquadC[6]*biquadC[14];
 			biquadC[12] = biquadC[11]; biquadC[11] = inputSampleR; biquadC[14] = biquadC[13];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadC[13] = outSample; //DF1
-			drySampleR = inputSampleR = (outSample * cWet) + (drySampleR * (1.0-cWet));
+			drySampleR = inputSampleR = (outSample * aw_f_cWet) + (drySampleR * (1.0f-aw_f_cWet));
 		}
-		if (dWet > 0.0) {
-			inputSampleL /= clipFactor;
+		if (aw_f_dWet > 0.0f) {
+			inputSampleL *= aw_inv0;
 			outSample = biquadD[2]*inputSampleL+biquadD[3]*biquadD[7]+biquadD[4]*biquadD[8]-biquadD[5]*biquadD[9]-biquadD[6]*biquadD[10];
 			biquadD[8] = biquadD[7]; biquadD[7] = inputSampleL; biquadD[10] = biquadD[9];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadD[9] = outSample; //DF1
-			drySampleL = inputSampleL = (outSample * dWet) + (drySampleL * (1.0-dWet));
+			drySampleL = inputSampleL = (outSample * aw_f_dWet) + (drySampleL * (1.0f-aw_f_dWet));
 			
-			inputSampleR /= clipFactor;
+			inputSampleR *= aw_inv0;
 			outSample = biquadD[2]*inputSampleR+biquadD[3]*biquadD[11]+biquadD[4]*biquadD[12]-biquadD[5]*biquadD[13]-biquadD[6]*biquadD[14];
 			biquadD[12] = biquadD[11]; biquadD[11] = inputSampleR; biquadD[14] = biquadD[13];
 			if (outSample > 1.0) outSample = 1.0;
 			if (outSample < -1.0) outSample = -1.0;
 			biquadD[13] = outSample; //DF1
-			drySampleR = inputSampleR = (outSample * dWet) + (drySampleR * (1.0-dWet));
+			drySampleR = inputSampleR = (outSample * aw_f_dWet) + (drySampleR * (1.0f-aw_f_dWet));
 		}
 		
-		inputSampleL /= clipFactor; inputSampleR /= clipFactor;
+		inputSampleL *= aw_inv0; inputSampleR *= aw_inv0;
 		//opamp stage
-		if (fabs(iirSampleAL)<1.18e-37) iirSampleAL = 0.0;
-		iirSampleAL = (iirSampleAL * (1.0 - iirAmountA)) + (inputSampleL * iirAmountA);
+		if (fabsf(iirSampleAL)<1.18e-37f) iirSampleAL = 0.0f;
+		iirSampleAL = (iirSampleAL * (1.0f - aw_f_iirAmountA)) + (inputSampleL * aw_f_iirAmountA);
 		inputSampleL -= iirSampleAL;
-		if (fabs(iirSampleAR)<1.18e-37) iirSampleAR = 0.0;
-		iirSampleAR = (iirSampleAR * (1.0 - iirAmountA)) + (inputSampleR * iirAmountA);
+		if (fabsf(iirSampleAR)<1.18e-37f) iirSampleAR = 0.0f;
+		iirSampleAR = (iirSampleAR * (1.0f - aw_f_iirAmountA)) + (inputSampleR * aw_f_iirAmountA);
 		inputSampleR -= iirSampleAR;
 		
 		outSample = biquadE[2]*inputSampleL+biquadE[3]*biquadE[7]+biquadE[4]*biquadE[8]-biquadE[5]*biquadE[9]-biquadE[6]*biquadE[10];
@@ -528,10 +538,10 @@ static void aw_ZLowpass_process_fast(void *aw_state, int16_t *aw_out,
 		outSample = biquadE[2]*inputSampleR+biquadE[3]*biquadE[11]+biquadE[4]*biquadE[12]-biquadE[5]*biquadE[13]-biquadE[6]*biquadE[14];
 		biquadE[12] = biquadE[11]; biquadE[11] = inputSampleR; inputSampleR = outSample; biquadE[14] = biquadE[13]; biquadE[13] = inputSampleR; //DF1 right
 		
-		if (inputSampleL > 1.0) inputSampleL = 1.0; if (inputSampleL < -1.0) inputSampleL = -1.0;
-		inputSampleL -= (inputSampleL*inputSampleL*inputSampleL*inputSampleL*inputSampleL*0.1768);
-		if (inputSampleR > 1.0) inputSampleR = 1.0; if (inputSampleR < -1.0) inputSampleR = -1.0;
-		inputSampleR -= (inputSampleR*inputSampleR*inputSampleR*inputSampleR*inputSampleR*0.1768);
+		if (inputSampleL > 1.0f) inputSampleL = 1.0f; if (inputSampleL < -1.0f) inputSampleL = -1.0f;
+		inputSampleL -= (inputSampleL*inputSampleL*inputSampleL*inputSampleL*inputSampleL*0.1768f);
+		if (inputSampleR > 1.0f) inputSampleR = 1.0f; if (inputSampleR < -1.0f) inputSampleR = -1.0f;
+		inputSampleR -= (inputSampleR*inputSampleR*inputSampleR*inputSampleR*inputSampleR*0.1768f);
 		
 		outSample = biquadF[2]*inputSampleL+biquadF[3]*biquadF[7]+biquadF[4]*biquadF[8]-biquadF[5]*biquadF[9]-biquadF[6]*biquadF[10];
 		biquadF[8] = biquadF[7]; biquadF[7] = inputSampleL; inputSampleL = outSample; biquadF[10] = biquadF[9]; biquadF[9] = inputSampleL; //DF1 left
@@ -539,12 +549,12 @@ static void aw_ZLowpass_process_fast(void *aw_state, int16_t *aw_out,
 		outSample = biquadF[2]*inputSampleR+biquadF[3]*biquadF[11]+biquadF[4]*biquadF[12]-biquadF[5]*biquadF[13]-biquadF[6]*biquadF[14];
 		biquadF[12] = biquadF[11]; biquadF[11] = inputSampleR; inputSampleR = outSample; biquadF[14] = biquadF[13]; biquadF[13] = inputSampleR; //DF1 right
 		
-		if (outPad != 1.0) {inputSampleL *= outPad; inputSampleR *= outPad;}		
+		if (aw_f_outPad != 1.0f) {inputSampleL *= aw_f_outPad; inputSampleR *= aw_f_outPad;}		
 		//end opamp stage
 		
-		if (aWet !=1.0) {
-			inputSampleL = (inputSampleL * aWet) + (overallDrySampleL * (1.0-aWet));
-			inputSampleR = (inputSampleR * aWet) + (overallDrySampleR * (1.0-aWet));
+		if (aw_f_aWet !=1.0f) {
+			inputSampleL = (inputSampleL * aw_f_aWet) + (overallDrySampleL * (1.0f-aw_f_aWet));
+			inputSampleR = (inputSampleR * aw_f_aWet) + (overallDrySampleR * (1.0f-aw_f_aWet));
 		}
 		fpdL ^= fpdL << 13; fpdL ^= fpdL >> 17; fpdL ^= fpdL << 5;
 		fpdR ^= fpdR << 13; fpdR ^= fpdR >> 17; fpdR ^= fpdR << 5;
@@ -552,7 +562,7 @@ static void aw_ZLowpass_process_fast(void *aw_state, int16_t *aw_out,
 		
 		aw_outL = inputSampleL;
 		aw_outR = inputSampleR;
-    /* aw:end */		AW_OUT_REF(aw_out, aw_channels, aw_outL, aw_outR);
+    /* aw:end */		AW_OUT_FAST(aw_out, aw_channels, aw_outL, aw_outR);
 		aw_in += aw_channels;
 		aw_out += aw_channels;
 	}

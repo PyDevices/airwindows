@@ -352,18 +352,18 @@ static const uint32_t aw_ZHighpass2_offsets_ref[] = {offsetof(aw_ZHighpass2_ref_
 typedef struct {
     double aw_sample_rate;
     uint32_t aw_rand;
-    double iirSampleAL;
-    double iirSampleAR;
+    float iirSampleAL;
+    float iirSampleAR;
     double biquadA[biq_total];
     double biquadB[biq_total];
     double biquadC[biq_total];
     double biquadD[biq_total];
-    double inTrimA;
-    double inTrimB;
-    double outTrimA;
-    double outTrimB;
-    double wetA;
-    double wetB;
+    float inTrimA;
+    float inTrimB;
+    float outTrimA;
+    float outTrimB;
+    float wetA;
+    float wetB;
     double fixA[fix_total];
     double fixB[fix_total];
     uint32_t fpdL;
@@ -381,18 +381,18 @@ static void aw_ZHighpass2_init_fast(void *aw_state, double aw_rate) {
     aw_s->aw_rand = AW_RAND_SEED;
     const double aw_sample_rate = aw_rate;
     (void)aw_sample_rate;
-    double iirSampleAL = aw_s->iirSampleAL;
-    double iirSampleAR = aw_s->iirSampleAR;
+    float iirSampleAL = aw_s->iirSampleAL;
+    float iirSampleAR = aw_s->iirSampleAR;
     double *biquadA = aw_s->biquadA;
     double *biquadB = aw_s->biquadB;
     double *biquadC = aw_s->biquadC;
     double *biquadD = aw_s->biquadD;
-    double inTrimA = aw_s->inTrimA;
-    double inTrimB = aw_s->inTrimB;
-    double outTrimA = aw_s->outTrimA;
-    double outTrimB = aw_s->outTrimB;
-    double wetA = aw_s->wetA;
-    double wetB = aw_s->wetB;
+    float inTrimA = aw_s->inTrimA;
+    float inTrimB = aw_s->inTrimB;
+    float outTrimA = aw_s->outTrimA;
+    float outTrimB = aw_s->outTrimB;
+    float wetA = aw_s->wetA;
+    float wetB = aw_s->wetB;
     double *fixA = aw_s->fixA;
     double *fixB = aw_s->fixB;
     uint32_t fpdL = aw_s->fpdL;
@@ -442,18 +442,18 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
     aw_ZHighpass2_fast_t *aw_s = (aw_ZHighpass2_fast_t *)aw_state;
     const double aw_sample_rate = aw_s->aw_sample_rate;
     (void)aw_sample_rate;
-    double iirSampleAL = aw_s->iirSampleAL;
-    double iirSampleAR = aw_s->iirSampleAR;
+    float iirSampleAL = aw_s->iirSampleAL;
+    float iirSampleAR = aw_s->iirSampleAR;
     double *biquadA = aw_s->biquadA;
     double *biquadB = aw_s->biquadB;
     double *biquadC = aw_s->biquadC;
     double *biquadD = aw_s->biquadD;
-    double inTrimA = aw_s->inTrimA;
-    double inTrimB = aw_s->inTrimB;
-    double outTrimA = aw_s->outTrimA;
-    double outTrimB = aw_s->outTrimB;
-    double wetA = aw_s->wetA;
-    double wetB = aw_s->wetB;
+    float inTrimA = aw_s->inTrimA;
+    float inTrimB = aw_s->inTrimB;
+    float outTrimA = aw_s->outTrimA;
+    float outTrimB = aw_s->outTrimB;
+    float wetA = aw_s->wetA;
+    float wetB = aw_s->wetB;
     double *fixA = aw_s->fixA;
     double *fixB = aw_s->fixB;
     uint32_t fpdL = aw_s->fpdL;
@@ -510,51 +510,53 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
 	
  	double trim = 0.1+(3.712*biquadA[biq_freq]);
     
-    while (--sampleFrames >= 0)
+    const float aw_f_iirAmountA = (float)iirAmountA;
+	const float aw_f_trim = (float)trim;
+	while (--sampleFrames >= 0)
     {
 		const float aw_inL = AW_IN_L(aw_in);
 		const float aw_inR = AW_IN_R(aw_in, aw_channels);
 		float aw_outL = 0.0f, aw_outR = 0.0f;/* aw:loop */
-		double inputSampleL = aw_inL;
-		double inputSampleR = aw_inR;
-		if (fabs(inputSampleL)<1.18e-23) inputSampleL = fpdL * 1.18e-17;
-		if (fabs(inputSampleR)<1.18e-23) inputSampleR = fpdR * 1.18e-17;
-		double drySampleL = inputSampleL;
-		double drySampleR = inputSampleR;
-		double overallDrySampleL = inputSampleL;
-		double overallDrySampleR = inputSampleR;
+		float inputSampleL = aw_inL;
+		float inputSampleR = aw_inR;
+		if (fabsf(inputSampleL)<1.18e-23f) inputSampleL = fpdL * 1.18e-17f;
+		if (fabsf(inputSampleR)<1.18e-23f) inputSampleR = fpdR * 1.18e-17f;
+		float drySampleL = inputSampleL;
+		float drySampleR = inputSampleR;
+		float overallDrySampleL = inputSampleL;
+		float overallDrySampleR = inputSampleR;
 		
 		double outSample = (double)sampleFrames/inFramesToProcess;
-		biquadA[biq_a0] = (biquadA[biq_aA0]*outSample)+(biquadA[biq_aB0]*(1.0-outSample));
-		biquadA[biq_a1] = (biquadA[biq_aA1]*outSample)+(biquadA[biq_aB1]*(1.0-outSample));
-		biquadA[biq_a2] = (biquadA[biq_aA2]*outSample)+(biquadA[biq_aB2]*(1.0-outSample));
-		biquadA[biq_b1] = (biquadA[biq_bA1]*outSample)+(biquadA[biq_bB1]*(1.0-outSample));
-		biquadA[biq_b2] = (biquadA[biq_bA2]*outSample)+(biquadA[biq_bB2]*(1.0-outSample));
+		biquadA[biq_a0] = (biquadA[biq_aA0]*outSample)+(biquadA[biq_aB0]*(1.0f-outSample));
+		biquadA[biq_a1] = (biquadA[biq_aA1]*outSample)+(biquadA[biq_aB1]*(1.0f-outSample));
+		biquadA[biq_a2] = (biquadA[biq_aA2]*outSample)+(biquadA[biq_aB2]*(1.0f-outSample));
+		biquadA[biq_b1] = (biquadA[biq_bA1]*outSample)+(biquadA[biq_bB1]*(1.0f-outSample));
+		biquadA[biq_b2] = (biquadA[biq_bA2]*outSample)+(biquadA[biq_bB2]*(1.0f-outSample));
 		for (int x = 0; x < 7; x++) {biquadD[x] = biquadC[x] = biquadB[x] = biquadA[x];}
 		//this is the interpolation code for the biquad
-		double inTrim = (inTrimA*outSample)+(inTrimB*(1.0-outSample));
-		double outTrim = (outTrimA*outSample)+(outTrimB*(1.0-outSample));
-		double wet = (wetA*outSample)+(wetB*(1.0-outSample));
-		double aWet = 1.0;
-		double bWet = 1.0;
-		double cWet = 1.0;
-		double dWet = wet*4.0;
+		float inTrim = (inTrimA*outSample)+(inTrimB*(1.0f-outSample));
+		float outTrim = (outTrimA*outSample)+(outTrimB*(1.0f-outSample));
+		float wet = (wetA*outSample)+(wetB*(1.0f-outSample));
+		float aWet = 1.0f;
+		float bWet = 1.0f;
+		float cWet = 1.0f;
+		float dWet = wet*4.0f;
 		//four-stage wet/dry control using progressive stages that bypass when not engaged
-		if (dWet < 1.0) {aWet = dWet; bWet = 0.0; cWet = 0.0; dWet = 0.0;}
-		else if (dWet < 2.0) {bWet = dWet - 1.0; cWet = 0.0; dWet = 0.0;}
-		else if (dWet < 3.0) {cWet = dWet - 2.0; dWet = 0.0;}
-		else {dWet -= 3.0;}
+		if (dWet < 1.0f) {aWet = dWet; bWet = 0.0f; cWet = 0.0f; dWet = 0.0f;}
+		else if (dWet < 2.0f) {bWet = dWet - 1.0f; cWet = 0.0f; dWet = 0.0f;}
+		else if (dWet < 3.0f) {cWet = dWet - 2.0f; dWet = 0.0f;}
+		else {dWet -= 3.0f;}
 		//this is one way to make a little set of dry/wet stages that are successively added to the
 		//output as the control is turned up. Each one independently goes from 0-1 and stays at 1
 		//beyond that point: this is a way to progressively add a 'black box' sound processing
 		//which lets you fall through to simpler processing at lower settings.
-		if (inTrim != 1.0) {
+		if (inTrim != 1.0f) {
 			inputSampleL *= inTrim;
 			inputSampleR *= inTrim;
 		}
-		if (inputSampleL > 1.0) inputSampleL = 1.0; if (inputSampleL < -1.0) inputSampleL = -1.0;
-		if (inputSampleR > 1.0) inputSampleR = 1.0; if (inputSampleR < -1.0) inputSampleR = -1.0;
-		inputSampleL *= trim; inputSampleR *= trim;
+		if (inputSampleL > 1.0f) inputSampleL = 1.0f; if (inputSampleL < -1.0f) inputSampleL = -1.0f;
+		if (inputSampleR > 1.0f) inputSampleR = 1.0f; if (inputSampleR < -1.0f) inputSampleR = -1.0f;
+		inputSampleL *= aw_f_trim; inputSampleR *= aw_f_trim;
 		//inputSampleL /= clipFactor; inputSampleR /= clipFactor;
 		outSample = (inputSampleL * biquadA[biq_a0]) + biquadA[biq_sL1];
 		if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
@@ -567,60 +569,60 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
 		biquadA[biq_sR2] = (inputSampleR * biquadA[biq_a2]) - (outSample * biquadA[biq_b2]);
 		drySampleR = inputSampleR = outSample;
 		
-		if (bWet > 0.0) {
+		if (bWet > 0.0f) {
 			//inputSampleL /= clipFactor;
 			outSample = (inputSampleL * biquadB[biq_a0]) + biquadB[biq_sL1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadB[biq_sL1] = (inputSampleL * biquadB[biq_a1]) - (outSample * biquadB[biq_b1]) + biquadB[biq_sL2];
 			biquadB[biq_sL2] = (inputSampleL * biquadB[biq_a2]) - (outSample * biquadB[biq_b2]);
-			drySampleL = inputSampleL = (outSample * bWet) + (drySampleL * (1.0-bWet));
+			drySampleL = inputSampleL = (outSample * bWet) + (drySampleL * (1.0f-bWet));
 			//inputSampleR /= clipFactor;
 			outSample = (inputSampleR * biquadB[biq_a0]) + biquadB[biq_sR1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadB[biq_sR1] = (inputSampleR * biquadB[biq_a1]) - (outSample * biquadB[biq_b1]) + biquadB[biq_sR2];
 			biquadB[biq_sR2] = (inputSampleR * biquadB[biq_a2]) - (outSample * biquadB[biq_b2]);
-			drySampleR = inputSampleR = (outSample * bWet) + (drySampleR * (1.0-bWet));
+			drySampleR = inputSampleR = (outSample * bWet) + (drySampleR * (1.0f-bWet));
 		}
 		
-		if (cWet > 0.0) {
+		if (cWet > 0.0f) {
 			//inputSampleL /= clipFactor;
 			outSample = (inputSampleL * biquadC[biq_a0]) + biquadC[biq_sL1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadC[biq_sL1] = (inputSampleL * biquadC[biq_a1]) - (outSample * biquadC[biq_b1]) + biquadC[biq_sL2];
 			biquadC[biq_sL2] = (inputSampleL * biquadC[biq_a2]) - (outSample * biquadC[biq_b2]);
-			drySampleL = inputSampleL = (outSample * cWet) + (drySampleL * (1.0-cWet));
+			drySampleL = inputSampleL = (outSample * cWet) + (drySampleL * (1.0f-cWet));
 			//inputSampleR /= clipFactor;
 			outSample = (inputSampleR * biquadC[biq_a0]) + biquadC[biq_sR1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadC[biq_sR1] = (inputSampleR * biquadC[biq_a1]) - (outSample * biquadC[biq_b1]) + biquadC[biq_sR2];
 			biquadC[biq_sR2] = (inputSampleR * biquadC[biq_a2]) - (outSample * biquadC[biq_b2]);
-			drySampleR = inputSampleR = (outSample * cWet) + (drySampleR * (1.0-cWet));
+			drySampleR = inputSampleR = (outSample * cWet) + (drySampleR * (1.0f-cWet));
 		}
 		
-		if (dWet > 0.0) {
+		if (dWet > 0.0f) {
 			//inputSampleL /= clipFactor;
 			outSample = (inputSampleL * biquadD[biq_a0]) + biquadD[biq_sL1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadD[biq_sL1] = (inputSampleL * biquadD[biq_a1]) - (outSample * biquadD[biq_b1]) + biquadD[biq_sL2];
 			biquadD[biq_sL2] = (inputSampleL * biquadD[biq_a2]) - (outSample * biquadD[biq_b2]);
-			drySampleL = inputSampleL = (outSample * dWet) + (drySampleL * (1.0-dWet));
+			drySampleL = inputSampleL = (outSample * dWet) + (drySampleL * (1.0f-dWet));
 			//inputSampleR /= clipFactor;
 			outSample = (inputSampleR * biquadD[biq_a0]) + biquadD[biq_sR1];
 			if (outSample > 1.0) outSample = 1.0; if (outSample < -1.0) outSample = -1.0;
 			biquadD[biq_sR1] = (inputSampleR * biquadD[biq_a1]) - (outSample * biquadD[biq_b1]) + biquadD[biq_sR2];
 			biquadD[biq_sR2] = (inputSampleR * biquadD[biq_a2]) - (outSample * biquadD[biq_b2]);
-			drySampleR = inputSampleR = (outSample * dWet) + (drySampleR * (1.0-dWet));
+			drySampleR = inputSampleR = (outSample * dWet) + (drySampleR * (1.0f-dWet));
 		}
 		
 		//inputSampleL /= clipFactor;
 		//inputSampleR /= clipFactor;
 		
 		//opamp stage
-		if (fabs(iirSampleAL)<1.18e-37) iirSampleAL = 0.0;
-		iirSampleAL = (iirSampleAL * (1.0 - iirAmountA)) + (inputSampleL * iirAmountA);
+		if (fabsf(iirSampleAL)<1.18e-37f) iirSampleAL = 0.0f;
+		iirSampleAL = (iirSampleAL * (1.0f - aw_f_iirAmountA)) + (inputSampleL * aw_f_iirAmountA);
 		inputSampleL -= iirSampleAL;
-		if (fabs(iirSampleAR)<1.18e-37) iirSampleAR = 0.0;
-		iirSampleAR = (iirSampleAR * (1.0 - iirAmountA)) + (inputSampleR * iirAmountA);
+		if (fabsf(iirSampleAR)<1.18e-37f) iirSampleAR = 0.0f;
+		iirSampleAR = (iirSampleAR * (1.0f - aw_f_iirAmountA)) + (inputSampleR * aw_f_iirAmountA);
 		inputSampleR -= iirSampleAR;
 		
 		outSample = (inputSampleL * fixA[fix_a0]) + fixA[fix_sL1];
@@ -632,10 +634,10 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
 		fixA[fix_sR2] = (inputSampleR * fixA[fix_a2]) - (outSample * fixA[fix_b2]);
 		inputSampleR = outSample; //fixed biquad filtering ultrasonics
 		
-		if (inputSampleL > 1.0) inputSampleL = 1.0; if (inputSampleL < -1.0) inputSampleL = -1.0;
-		inputSampleL -= (inputSampleL*inputSampleL*inputSampleL*inputSampleL*inputSampleL*0.1768);
-		if (inputSampleR > 1.0) inputSampleR = 1.0; if (inputSampleR < -1.0) inputSampleR = -1.0;
-		inputSampleR -= (inputSampleR*inputSampleR*inputSampleR*inputSampleR*inputSampleR*0.1768);
+		if (inputSampleL > 1.0f) inputSampleL = 1.0f; if (inputSampleL < -1.0f) inputSampleL = -1.0f;
+		inputSampleL -= (inputSampleL*inputSampleL*inputSampleL*inputSampleL*inputSampleL*0.1768f);
+		if (inputSampleR > 1.0f) inputSampleR = 1.0f; if (inputSampleR < -1.0f) inputSampleR = -1.0f;
+		inputSampleR -= (inputSampleR*inputSampleR*inputSampleR*inputSampleR*inputSampleR*0.1768f);
 		
 		outSample = (inputSampleL * fixB[fix_a0]) + fixB[fix_sL1];
 		fixB[fix_sL1] = (inputSampleL * fixB[fix_a1]) - (outSample * fixB[fix_b1]) + fixB[fix_sL2];
@@ -646,15 +648,15 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
 		fixB[fix_sR2] = (inputSampleR * fixB[fix_a2]) - (outSample * fixB[fix_b2]);
 		inputSampleR = outSample; //fixed biquad filtering ultrasonics
 		
-		if (outTrim != 1.0) {
+		if (outTrim != 1.0f) {
 			inputSampleL *= outTrim;
 			inputSampleR *= outTrim;
 		}
 		//end opamp stage
 		
-		if (aWet != 1.0) {
-			inputSampleL = (inputSampleL*aWet) + (overallDrySampleL*(1.0-aWet));
-			inputSampleR = (inputSampleR*aWet) + (overallDrySampleR*(1.0-aWet));
+		if (aWet != 1.0f) {
+			inputSampleL = (inputSampleL*aWet) + (overallDrySampleL*(1.0f-aWet));
+			inputSampleR = (inputSampleR*aWet) + (overallDrySampleR*(1.0f-aWet));
 		}
 		fpdL ^= fpdL << 13; fpdL ^= fpdL >> 17; fpdL ^= fpdL << 5;
 		fpdR ^= fpdR << 13; fpdR ^= fpdR >> 17; fpdR ^= fpdR << 5;
@@ -662,7 +664,7 @@ static void aw_ZHighpass2_process_fast(void *aw_state, int16_t *aw_out,
 		
 		aw_outL = inputSampleL;
 		aw_outR = inputSampleR;
-    /* aw:end */		AW_OUT_REF(aw_out, aw_channels, aw_outL, aw_outR);
+    /* aw:end */		AW_OUT_FAST(aw_out, aw_channels, aw_outL, aw_outR);
 		aw_in += aw_channels;
 		aw_out += aw_channels;
 	}
