@@ -21,14 +21,8 @@ A wheel is published for:
 - Android, arm64 and x86_64, and Pyodide, on Python 3.13 and 3.14
 
 Python 3.15 and its free-threaded build have wheels on Linux, Windows and
-macOS. The releases so far are pre-releases (`.devN`, `rcN`), and `pip` skips
-those unless you ask for one:
-
-```sh
-pip install --pre omnipython-airwindows
-```
-
-With `uv`, the same is `uv pip install --prerelease allow omnipython-airwindows`.
+macOS. A pre-release (`.devN`, `rcN`) is published to PyPI too, and `pip` skips
+pre-releases unless you ask for one with `pip install --pre`.
 
 ### Build from source
 
