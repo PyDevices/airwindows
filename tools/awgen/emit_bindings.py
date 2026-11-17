@@ -9,7 +9,8 @@
   src/audioairwindows/module.c           the MicroPython module table
   src/audioairwindows/types.c            a MicroPython type per plug-in
   src/cpython/audioairwindows.py         a CPython class per plug-in
-  audioairwindows.pyi                    the stub, for both
+  stubs/audioairwindows-stubs/__init__.pyi
+                                         the stub, for both
   docs/reference/plugins.md              the list, by category
 
 Every plug-in's code is guarded by AW_WITH_ALL or AW_WITH_<Name>, so one
@@ -331,7 +332,7 @@ def emit(root, index, policy, failed=None):
         "src/cpython/audioairwindows.py":
             (tpl / "audioairwindows.py").read_text().replace(
                 "# @PLUGINS@\n", py_classes(index, names)),
-        "audioairwindows.pyi":
+        "stubs/audioairwindows-stubs/__init__.pyi":
             (tpl / "audioairwindows.pyi").read_text().replace(
                 "# @PLUGINS@\n", pyi_classes(index, names)),
         "docs/reference/plugins.md":

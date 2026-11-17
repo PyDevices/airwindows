@@ -31,6 +31,9 @@ class _Airwindows:
     sample_rate: int
     channel_count: int
 
+    def __init__(self, sample_rate: int = 48000, channel_count: int = 2,
+                 **parameters: float) -> None: ...
+
     @property
     def playing(self) -> bool:
         """True while a source is attached."""
@@ -60,6 +63,6 @@ class _Airwindows:
         """Release the node's memory. Any later call raises ValueError."""
 
     def __enter__(self) -> "_Airwindows": ...
-    def __exit__(self, *args: object) -> None: ...
+    def __exit__(self, exc_type: object, exc: object, tb: object) -> None: ...
 
 # @PLUGINS@

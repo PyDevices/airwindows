@@ -89,7 +89,7 @@ MICROPYTHON=/path/to/micropython/ports/unix/build-standard/micropython \
 
 Everything under `src/airwindows/plugins/`, the registry, `selection.txt`,
 `src/audioairwindows/module.c` and `types.c`, `src/cpython/audioairwindows.py`
-and `audioairwindows.pyi` is written by `tools/awgen`. Don't edit them by
+and `stubs/audioairwindows-stubs/__init__.pyi` is written by `tools/awgen`. Don't edit them by
 hand: change the generator or `tools/awgen/policy.json` and run it again.
 
 ```sh
@@ -98,6 +98,10 @@ git -C .cache/airwindows-upstream checkout <the commit in DEPENDENCIES.lock>
 python -m tools.awgen --check --jobs 4
 python tests/reference/check.py --faults --jobs 4 Name ...
 ```
+
+The stub ships in the wheel as the `audioairwindows-stubs` package. After
+changing it, run `python tools/check_stubs.py` with the published wheel installed:
+it checks the stub against the module and against two small samples.
 
 `policy.json` is where a plug-in's exceptions live, each with its reason:
 members the single-precision variant keeps double (`wide`), plug-ins whose
