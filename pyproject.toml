@@ -24,8 +24,14 @@ Documentation = "https://github.com/PyDevices/airwindows/blob/main/docs/index.md
 Issues = "https://github.com/PyDevices/airwindows/issues"
 
 [tool.setuptools]
-package-dir = {"" = "src/cpython"}
+package-dir = {"" = "src/cpython", "audioairwindows-stubs" = "stubs/audioairwindows-stubs"}
 py-modules = ["audioairwindows"]
+# The stub ships as its own stub-only package, which is how PEP 561 types a
+# single-file module, so mypy and editors find it after `pip install`.
+packages = ["audioairwindows-stubs"]
+
+[tool.setuptools.package-data]
+"*" = ["*.pyi"]
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}

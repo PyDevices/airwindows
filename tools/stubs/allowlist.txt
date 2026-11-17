@@ -1,0 +1,6 @@
+# CPython's audioairwindows.py lists its names in __all__; the MicroPython module has no
+# such list, and the stub describes the surface both share.
+audioairwindows.__all__
+# CPython's play() also takes a `loop` keyword that does nothing, for audiocore's sake;
+# the MicroPython module's play() takes the sample alone, and the stub keeps to that.
+audioairwindows._Airwindows.play

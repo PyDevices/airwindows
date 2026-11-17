@@ -46,7 +46,7 @@ GENERATED_DOCS = ("docs/reference/plugins.md",)
 FULL = (".github/*", "tools/ci_scope.py")
 #: The cpython matrix widens to every version on a pull request.
 WIDE = ("src/*", "setup.py", "pyproject.toml", "manifest.py", "VERSION",
-        "DEPENDENCIES.lock", "audioairwindows.pyi", "tools/awgen/templates/*")
+        "DEPENDENCIES.lock", "stubs/*", "tools/awgen/templates/*")
 #: The micropython job.
 MICROPYTHON = ("src/*", "tools/awgen/*", "micropython.mk", "micropython.cmake",
                "manifest.py", "VERSION", "DEPENDENCIES.lock", "setup.py",
