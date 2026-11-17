@@ -48,7 +48,7 @@ skip = "*musllinux* *-win32 cp315*-android_* cp315*-pyodide_*"
 # without resolving its dependencies.
 test-command = "python {project}/examples/audioairwindows_simpletest.py"
 test-skip = "*-pyodide_* *-android_*"
-before-test = "pip install --pre omnipython-audiodsp"
+before-test = "pip install omnipython-audiodsp"
 test-environment = { PIP_NO_DEPS = "1" }
 
 # auto64 is the runner's own 64-bit architecture: x86_64 on an x86_64 runner,

@@ -4,7 +4,7 @@
 
 ```sh
 python -m venv .venv
-.venv/bin/pip install --pre setuptools numpy "omnipython-audiodsp>=0.6.10"
+.venv/bin/pip install setuptools numpy "omnipython-audiodsp>=0.6.16"
 .venv/bin/pip install --no-build-isolation .
 .venv/bin/python -m unittest discover -s tests
 .venv/bin/python -m unittest discover -s tests -p 'check_*.py'

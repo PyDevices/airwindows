@@ -21,8 +21,8 @@ A wheel is published for:
 - Android, arm64 and x86_64, and Pyodide, on Python 3.13 and 3.14
 
 Python 3.15 and its free-threaded build have wheels on Linux, Windows and
-macOS. A pre-release (`.devN`, `rcN`) is published to PyPI too, and `pip` skips
-pre-releases unless you ask for one with `pip install --pre`.
+macOS. A pre-release (`.devN`, `rcN`) is published to PyPI too; `pip` installs one
+only when you name its exact version.
 
 ### Build from source
 
