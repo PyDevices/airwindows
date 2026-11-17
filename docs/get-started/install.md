@@ -21,22 +21,8 @@ A wheel is published for:
 - Android, arm64 and x86_64, and Pyodide, on Python 3.13 and 3.14
 
 Python 3.15 and its free-threaded build have wheels on Linux, Windows and
-macOS. A pre-release (`.devN`, `rcN`) is published to TestPyPI first, and
-`pip` skips pre-releases unless you ask for one:
-
-```sh
-pip install --pre -i https://test.pypi.org/simple/ \
-    --extra-index-url https://pypi.org/simple/ omnipython-airwindows
-```
-
-With `uv`, add `--index-strategy unsafe-best-match`, or it resolves the
-name on PyPI before TestPyPI and installs the wrong version:
-
-```sh
-uv pip install --prerelease allow --index-strategy unsafe-best-match \
-    -i https://test.pypi.org/simple/ \
-    --extra-index-url https://pypi.org/simple/ omnipython-airwindows
-```
+macOS. A pre-release (`.devN`, `rcN`) is published to PyPI too, and `pip` skips
+pre-releases unless you ask for one with `pip install --pre`.
 
 ### Build from source
 

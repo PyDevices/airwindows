@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   publish:
-    uses: PyDevices/.github/.github/workflows/reusable-publish-release-packages.yml@publishing-v30
+    uses: PyDevices/.github/.github/workflows/reusable-publish-release-packages.yml@publishing-v31
     with:
       build-kind: native-and-wasm
       distribution-name: omnipython-airwindows
@@ -64,7 +64,7 @@ jobs:
       - pypi
     if: >-
       !cancelled() && needs.publish.outputs.pypi-publish == 'true'
-    uses: PyDevices/.github/.github/workflows/reusable-report-pypi-result.yml@publishing-v30
+    uses: PyDevices/.github/.github/workflows/reusable-report-pypi-result.yml@publishing-v31
     with:
       distribution-name: omnipython-airwindows
       version: ${{ needs.publish.outputs.version }}

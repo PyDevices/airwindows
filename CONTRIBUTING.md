@@ -4,7 +4,7 @@
 
 ```sh
 python -m venv .venv
-.venv/bin/pip install --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ setuptools numpy "omnipython-audiodsp>=0.6.10"
+.venv/bin/pip install --pre setuptools numpy "omnipython-audiodsp>=0.6.10"
 .venv/bin/pip install --no-build-isolation .
 .venv/bin/python -m unittest discover -s tests
 .venv/bin/python -m unittest discover -s tests -p 'check_*.py'
@@ -59,13 +59,11 @@ installs into a clean environment and runs the simple test.
 
 To release, run the "Prepare release" workflow. It opens a pull request with
 `VERSION` and the changelog; merging it makes the tag and the GitHub Release,
-and the Release starts "Publish release packages". Every release goes to
-TestPyPI and is attached to its GitHub Release. A pre-release
-(`X.Y.ZrcN`, `X.Y.Z.devN`) stops there. A final release then goes to
-production PyPI after a maintainer approves the `pypi` environment; that
-upload is the `pypi` job in `publish-release-packages.yml`, not in the
-reusable workflow, because PyPI's Trusted Publishing only matches the
-workflow that runs the upload.
+and the Release starts "Publish release packages". Every release,
+pre-releases (`X.Y.ZrcN`, `X.Y.Z.devN`) included, goes to PyPI and is attached
+to its GitHub Release. The PyPI upload is the `pypi` job in
+`publish-release-packages.yml`, not in the reusable workflow, because PyPI's
+Trusted Publishing only matches the workflow that runs the upload.
 
 If a publish run is interrupted, run it again for the same tag:
 
