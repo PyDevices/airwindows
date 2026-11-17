@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.0.dev3 (2026-11-17)
+
+- audioairwindows: the wheel carries its type stub, so mypy and editors see every plug-in's knobs (#21)
+
 ## v0.1.0.dev1 (2026-11-13)
 
 - Depend on omnipython-audiodsp; build against audiodsp v0.6.16.dev2 (#13)
