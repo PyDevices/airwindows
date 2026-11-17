@@ -44,11 +44,11 @@ skip = "*musllinux* *-win32 cp315*-android_* cp315*-pyodide_*"
 # Each wheel installs into a clean environment with audiodsp beside it and
 # renders PurestDrive. The old pydevices-audiodsp releases have no Linux aarch64
 # wheel and no 3.15 wheel, so the test environment takes omnipython-audiodsp,
-# the same code under its current name, from TestPyPI and installs the wheel
+# the same code under its current name, from PyPI and installs the wheel
 # without resolving its dependencies.
 test-command = "python {project}/examples/audioairwindows_simpletest.py"
 test-skip = "*-pyodide_* *-android_*"
-before-test = "pip install --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ omnipython-audiodsp"
+before-test = "pip install --pre omnipython-audiodsp"
 test-environment = { PIP_NO_DEPS = "1" }
 
 # auto64 is the runner's own 64-bit architecture: x86_64 on an x86_64 runner,
