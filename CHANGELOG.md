@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.0 (2026-11-17)
+
+- Install: pip install omnipython-airwindows, from PyPI (#26)
+
 ## v0.1.0.dev4 (2026-11-17)
 
 - Publishing: pre-releases reach PyPI as well as finals (#24)
