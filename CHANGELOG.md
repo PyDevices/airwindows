@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.0.dev4 (2026-11-17)
+
+- Publishing: pre-releases reach PyPI as well as finals (#24)
+- Release workflows: pinned to publishing-v28 (#23)
+
 ## v0.1.0.dev3 (2026-11-17)
 
 - audioairwindows: the wheel carries its type stub, so mypy and editors see every plug-in's knobs (#21)
