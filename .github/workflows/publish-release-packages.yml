@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   publish:
-    uses: PyDevices/.github/.github/workflows/reusable-publish-release-packages.yml@publishing-v28
+    uses: PyDevices/.github/.github/workflows/reusable-publish-release-packages.yml@publishing-v30
     with:
       build-kind: native-and-wasm
       distribution-name: omnipython-airwindows
@@ -38,8 +38,8 @@ jobs:
 
   pypi:
     # The upload runs in this file because PyPI matches its Trusted Publisher
-    # against the workflow that runs the upload job. The pypi environment
-    # requires a reviewer's approval and allows v* tags only.
+    # against the workflow that runs the upload job. Every version goes,
+    # pre-releases included; the pypi environment allows v* tags only.
     needs: publish
     if: >-
       !cancelled() && needs.publish.outputs.pypi-publish == 'true'
@@ -64,7 +64,7 @@ jobs:
       - pypi
     if: >-
       !cancelled() && needs.publish.outputs.pypi-publish == 'true'
-    uses: PyDevices/.github/.github/workflows/reusable-report-pypi-result.yml@publishing-v28
+    uses: PyDevices/.github/.github/workflows/reusable-report-pypi-result.yml@publishing-v30
     with:
       distribution-name: omnipython-airwindows
       version: ${{ needs.publish.outputs.version }}
