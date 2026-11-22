@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.1.dev0 (2026-11-22)
+
+- ROADMAP: the PyPI release has shipped (#29)
+- Install: audiodsp 0.6.16 from PyPI, no pre-release flag (#28)
+
 ## v0.1.0 (2026-11-17)
 
 - Install: pip install omnipython-airwindows, from PyPI (#26)
